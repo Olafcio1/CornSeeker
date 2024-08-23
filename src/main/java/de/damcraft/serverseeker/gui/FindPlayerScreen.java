@@ -84,7 +84,7 @@ public class FindPlayerScreen extends WindowScreen {
                 case UUID -> request.setUuid(uuid.get());
             }
 
-            String jsonResponse = SmallHttp.post("https://api.serverseeker.net/whereis", request.json());
+            String jsonResponse = SmallHttp.post("https://api.cornbread2100.com/servers?query=", request.query());
 
             WhereisResponse resp = gson.fromJson(jsonResponse, WhereisResponse.class);
 
