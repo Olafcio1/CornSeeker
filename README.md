@@ -10,9 +10,9 @@
 <h1 align="center"> Official CornSeeker addon for meteor </h1>
 
 <div align="center">
-    <h3>Fuck ServerSeeker. It got shutdown. Fuck this absolute shit. Offical QWERTTY discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
-    <a href="https://discord.gg/jVyHyYbqdS">
-    <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
+    <h3>Fuck ServerSeeker. It got shutdown. I'm crying. Offical MC Server Scanner discord server, join for support:</h3>
+    <a href="https://discord.gg/mc-server-scanner-1005132317297221785">
+        <img src="https://invidget.switchblade.xyz/mc-server-scanner-1005132317297221785">
     </a>
 </div>  
 <br>
