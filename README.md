@@ -4,14 +4,14 @@
 
 ## Installing
 1. Download Meteor Client (https://meteorclient.com/download), for help see https://meteorclient.com/faq/installation
-2. Download CornSeeker2100 using the comically large button above and drop it in your mods folder!
+2. Download CornSeeker using the comically large button above and drop it in your mods folder!
     
     
 <h1 align="center"> Official CornSeeker addon for meteor </h1>
 
 <div align="center">
-    <h3>Fuck ServerSeeker. It got shutdown. I'm crying. Offical MC Server Scanner discord server, join for support:</h3>
-<p>I will make my own readme btw later now i wanna focus on the code, as there's a bug that basically idfk why i cant find new servers so for now shut</p>
+    <h3>MC Server Seeker is already back but this addon is alr made so lets keep it. I'll add BallsSeeker integration with this addon later.</h3>
+    <p>I will make my own readme btw later now i wanna focus on the code</p>
     <a href="https://discord.gg/mc-server-scanner-1005132317297221785">
         <img src="https://invidget.switchblade.xyz/mc-server-scanner-1005132317297221785">
     </a>

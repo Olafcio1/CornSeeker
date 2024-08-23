@@ -29,7 +29,7 @@ public class ServerSeekerScreen extends WindowScreen {
         userInfoList.row();
 
         userInfoList.add(theme.label("ur nick: "));
-        userInfoList.add(theme.label(ServerSeeker.mc.getName())).widget().color(Color.WHITE);
+        userInfoList.add(theme.label(ServerSeeker.mc.getSession().getUsername())).widget().color(Color.WHITE);
         userInfoList.row();
 
         userInfoList.add(theme.label("ur rizz: "));

@@ -1,9 +1,9 @@
-package de.damcraft.serverseeker.ssapi.responses;
+package de.damcraft.serverseeker.ssapi;
 
 import java.util.ArrayList;
 
 public class Server {
-    public record PlayerList(Double max, Double online, ArrayList<HistoryState> history, ArrayList<SamplePlayer> players) {
+    public record PlayerList(Double max, Double online, ArrayList<HistoryState> history, ArrayList<SamplePlayer> samples) {
         public record HistoryState(Integer online, Integer date) {}
         public record SamplePlayer(String id, Integer lastSeen, String name) {}
     }
