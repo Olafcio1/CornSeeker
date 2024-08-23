@@ -17,6 +17,7 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
@@ -38,14 +39,16 @@ public class ServerSeeker extends MeteorAddon {
 
     public static final Gson gson = new Gson();
 
+    public static MinecraftClient mc;
+
     @Override
     public void onInitialize() {
-        LOG.info("Loaded the ServerSeeker addon!");
+        LOG.info("Loaded the CornSeeker addon! Seek my bollz plz");
 
         // Load countries
         Countries.init();
 
-        Modules.get().add( new BungeeSpoofModule() );
+        Modules.get().add(new BungeeSpoofModule());
         Hud.get().register(HistoricPlayersHud.INFO);
 
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {

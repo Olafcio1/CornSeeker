@@ -1,16 +1,16 @@
-<a href="https://github.com/DAMcraft/MeteorServerSeeker/releases/download/4.3.2/server-seeker-4.3.2.jar">
+<a href="https://github.com/Olafcio1/CornSeeker2100/releases/download/1.0/server-seeker-1.0.jar">
     <img src="https://custom-icon-badges.demolab.com/badge/-Download-2b2b2b?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()"></img>
 </a>
 
 ## Installing
 1. Download Meteor Client (https://meteorclient.com/download), for help see https://meteorclient.com/faq/installation
-2. Download Meteor ServerSeeker using the comically large button above and drop it in your mods folder!
+2. Download CornSeeker2100 using the comically large button above and drop it in your mods folder!
     
     
-<h1 align="center"> Official ServerSeeker addon for meteor </h1>
+<h1 align="center"> Official CornSeeker addon for meteor </h1>
 
 <div align="center">
-    <h3>Offical ServerSeeker discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
+    <h3>Fuck ServerSeeker. It got shutdown. Fuck this absolute shit. Offical QWERTTY discord server (has a bot with a few more functionalities, like searching for bedrock servers), join for support</h3>
     <a href="https://discord.gg/jVyHyYbqdS">
     <img src="https://invidget.switchblade.xyz/serverseeker-1087081486747971705">
     </a>

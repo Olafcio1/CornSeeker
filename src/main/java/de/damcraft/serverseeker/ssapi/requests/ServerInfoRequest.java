@@ -1,12 +1,8 @@
 package de.damcraft.serverseeker.ssapi.requests;
 
-import de.damcraft.serverseeker.ServerSeekerSystem;
-
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 
 public class ServerInfoRequest {
-    private final String api_key = ServerSeekerSystem.get().apiKey;
-
     private String ip;
     private Integer port;
 

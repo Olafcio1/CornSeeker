@@ -1,12 +1,10 @@
 package de.damcraft.serverseeker.gui;
 
-import de.damcraft.serverseeker.ServerSeekerSystem;
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
 import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
-import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.systems.accounts.Account;
@@ -40,19 +38,6 @@ public class GetInfoScreen extends WindowScreen {
     public void initWidgets() {
         if (entry == null) {
             add(theme.label("No server selected"));
-            return;
-        }
-
-        String apiKey = ServerSeekerSystem.get().apiKey;
-        if (apiKey.isEmpty()) {
-            WHorizontalList widgetList = add(theme.horizontalList()).expandX().widget();
-            widgetList.add(theme.label("Please authenticate with Discord. "));
-            waitingForAuth = true;
-            WButton loginButton = widgetList.add(theme.button("Login")).widget();
-            loginButton.action = () -> {
-                if (this.client == null) return;
-                this.client.setScreen(new LoginWithDiscordScreen(this));
-            };
             return;
         }
 
@@ -174,13 +159,5 @@ public class GetInfoScreen extends WindowScreen {
     }
 
     @Override
-    public void tick() {
-        if (waitingForAuth) {
-            String authToken = ServerSeekerSystem.get().apiKey;
-            if (!authToken.isEmpty()) {
-                this.reload();
-                this.waitingForAuth = false;
-            }
-        }
-    }
+    public void tick() {}
 }

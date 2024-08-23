@@ -6,7 +6,7 @@ import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
-import de.damcraft.serverseeker.ssapi.responses.ServersResponse;
+import de.damcraft.serverseeker.ssapi.responses.Server;
 import de.damcraft.serverseeker.utils.MCVersionUtil;
 import de.damcraft.serverseeker.utils.MultiplayerScreenUtil;
 import meteordevelopment.meteorclient.gui.GuiThemes;
@@ -25,6 +25,7 @@ import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.nbt.NbtCompound;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
@@ -35,7 +36,7 @@ public class FindNewServersScreen extends WindowScreen {
     public WButton findButton;
     private boolean threadHasFinished;
     private String threadError;
-    private List<ServersResponse.Server> threadServers;
+    private List<Server> threadServers;
 
     public enum Cracked {
         Any,
@@ -188,10 +189,10 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<ServersRequest.Software> softwareSetting = sg.add(new EnumSetting.Builder<ServersRequest.Software>()
+    private final Setting<String> softwareSetting = sg.add(new StringSetting.Builder()
         .name("software")
-        .description("The server software the servers should have")
-        .defaultValue(ServersRequest.Software.Any)
+        .description("The server software the servers should have (regex)")
+        .defaultValue("")
         .build()
     );
 
@@ -227,9 +228,9 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Boolean> ignoreModded = sg.add(new BoolSetting.Builder()
-        .name("ignore-modded")
-        .description("Will not give you servers where mods have been detected")
+    private final Setting<Boolean> sendsPlayerlist = sg.add(new BoolSetting.Builder()
+        .name("sends-playerlist")
+        .description("Will not give you servers doesn't send the player sample.")
         .defaultValue(true)
         .build()
     );
@@ -341,7 +342,7 @@ public class FindNewServersScreen extends WindowScreen {
             }
 
             if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
-            if (ignoreModded.get()) request.setIgnoreModded(true);
+            if (sendsPlayerlist.get()) request.setSendsPlayerlist(true);
             if (onlyBungeeSpoofable.get()) request.setOnlyBungeeSpoofable(true);
 
 
@@ -353,17 +354,9 @@ public class FindNewServersScreen extends WindowScreen {
 
 
             MeteorExecutor.execute(() -> {
-                String jsonResp = SmallHttp.post("https://api.serverseeker.net/servers", request.json());
+                String jsonResp = SmallHttp.get("https://api.cornbread2100.com/servers" + request.query());
 
-                ServersResponse resp = gson.fromJson(jsonResp, ServersResponse.class);
-
-                // Set error message if there is one
-                if (resp.isError()) {
-                    this.threadError = resp.error;
-                    this.threadHasFinished = true;
-                    return;
-                }
-                this.threadServers = resp.data;
+                this.threadServers = gson.fromJson(jsonResp, ArrayList.class);
                 this.threadHasFinished = true;
             });
         };
@@ -418,7 +411,7 @@ public class FindNewServersScreen extends WindowScreen {
             return;
         }
         clear();
-        List<ServersResponse.Server> servers = this.threadServers;
+        List<Server> servers = this.threadServers;
 
         if (servers.isEmpty()) {
             add(theme.label("No servers found")).expandX();
@@ -430,11 +423,11 @@ public class FindNewServersScreen extends WindowScreen {
         add(theme.label("Found " + servers.size() + " servers")).expandX();
         WButton addAllButton = add(theme.button("Add all")).expandX().widget();
         addAllButton.action = () -> {
-            for (ServersResponse.Server server : servers) {
-                String ip = server.server;
+            for (Server server : servers) {
+                String ip = server.ip;
 
                 // Add server to list
-                MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "ServerSeeker " + ip, ip, false);
+                MultiplayerScreenUtil.addNameIpToServerList(multiplayerScreen, "CornSeeker " + ip, ip, false);
             }
             MultiplayerScreenUtil.saveList(multiplayerScreen);
 
@@ -458,9 +451,9 @@ public class FindNewServersScreen extends WindowScreen {
         table.row();
 
 
-        for (ServersResponse.Server server : servers) {
-            final String serverIP = server.server;
-            String serverVersion = server.version;
+        for (Server server : servers) {
+            final String serverIP = server.ip;
+            String serverVersion = server.version.name;
 
             table.add(theme.label(serverIP));
             table.add(theme.label(serverVersion));
@@ -468,7 +461,7 @@ public class FindNewServersScreen extends WindowScreen {
             WButton addServerButton = theme.button("Add Server");
             addServerButton.action = () -> {
                 System.out.println(multiplayerScreen.getServerList() == null);
-                ServerInfo info = new ServerInfo("ServerSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
+                ServerInfo info = new ServerInfo("CornSeeker " + serverIP, serverIP, ServerInfo.ServerType.OTHER);
                 MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                 addServerButton.visible = false;
             };

@@ -6,7 +6,8 @@
     "MultiplayerScreenAccessor",
     "MultiplayerScreenMixin",
     "SystemsMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

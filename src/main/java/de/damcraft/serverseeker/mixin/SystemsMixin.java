@@ -1,6 +1,5 @@
 package de.damcraft.serverseeker.mixin;
 
-import de.damcraft.serverseeker.ServerSeekerSystem;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +18,5 @@ public abstract class SystemsMixin {
     }
 
     @Inject(method = "init", at = @At("HEAD"))
-    private static void onInit(CallbackInfo ci) {
-        add(new ServerSeekerSystem());
-    }
+    private static void onInit(CallbackInfo ci) {}
 }

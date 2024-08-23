@@ -2,17 +2,18 @@
   "schemaVersion": 1,
   "id": "serverseeker",
   "version": "${version}",
-  "name": "ServerSeeker",
-  "description": "Search for basically any Minecraft server that exists. Basically copenheimer, but public and better.",
+  "name": "CornSeeker",
+  "description": "Search for basically any Minecraft server that exists. Reborn.",
   "authors": [
-    "DAMcraft"
+    "DAMcraft",
+    "Olafcio"
   ],
   "contact": {
-    "repo": "https://github.com/DAMcraft/MeteorServerSeeker/",
-    "discord": "https://discord.gg/serverseeker-1087081486747971705",
-    "homepage": "https://serverseeker.net/",
-    "issues": "https://github.com/DAMcraft/MeteorServerSeeker/issues",
-    "sources": "https://github.com/DAMcraft/MeteorServerSeeker/"
+    "repo": "https://github.com/Olafcio1/CornSeeker/",
+    "discord": "https://discord.gg/mc-server-scanner-1005132317297221785",
+    "homepage": "https://www.cornbread2100.com/server-scanner",
+    "issues": "https://github.com/Olafcio1/CornSeeker/issues",
+    "sources": "https://github.com/Olafcio1/CornSeeker/"
   },
   "icon": "assets/serverseeker/icon.png",
   "environment": "client",
@@ -29,7 +30,7 @@
     "github:sha": "${gh_hash}",
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/serverseeker-1087081486747971705"
+        "modmenu.discord": "https://discord.gg/mc-server-scanner-1005132317297221785"
       }
     }
   },
