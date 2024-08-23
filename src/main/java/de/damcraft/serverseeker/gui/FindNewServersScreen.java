@@ -378,7 +378,7 @@ public class FindNewServersScreen extends WindowScreen {
                     server.org = (String) el.get("org");
                     server.port = (Double) el.get("port");
                     server.version = new Server.Version(
-                        (String) el.get("version.name"),
+                        Objects.requireNonNullElse((String) el.get("version.name"), ""),
                         (Double) el.get("version.protocol")
                     );
                     server.description = new Server.Description(
@@ -407,8 +407,8 @@ public class FindNewServersScreen extends WindowScreen {
                         players
                     );
                     server.geo = new Server.Geolocation(
-                        (String) el.get("geo.city"),
-                        (String) el.get("geo.country"),
+                        Objects.requireNonNullElse((String) el.get("geo.city"), ""),
+                        Objects.requireNonNullElse((String) el.get("geo.country"), ""),
                         (Number) el.get("lat"),
                         (Number) el.get("lon")
                     );
