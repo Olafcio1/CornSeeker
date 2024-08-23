@@ -34,7 +34,7 @@ def main():
     html_url = None
     if GITHUB_TOKEN is not None:
         github_req = requests.get(
-            f'https://api.github.com/repos/DAMcraft/MeteorServerSeeker/compare/{LAST_COMMIT}...{NEW_COMMIT}',
+            f'https://api.github.com/repos/Olafcio1/CornSeeker/compare/{LAST_COMMIT}...{NEW_COMMIT}',
             headers={
                 'Authorization': f'Bearer {GITHUB_TOKEN}'
             }
@@ -44,12 +44,12 @@ def main():
                 sha = commit['sha']
                 message = commit['commit']['message']
                 changes[sha] = message
-                changes_message += (f'- [`{sha[:7]}`](https://github.com/DAMcraft/MeteorServerSeeker/commit/{sha}/) '
+                changes_message += (f'- [`{sha[:7]}`](https://github.com/Olafcio1/CornSeeker/commit/{sha}/) '
                                     f'{message}\n')
 
         # Delete old release
         get_tags = requests.get(
-            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/tags/latest",
+            f"https://api.github.com/repos/Olafcio1/CornSeeker/releases/tags/latest",
             headers={
                 "Authorization": f"Bearer {GITHUB_TOKEN}"
             },
@@ -58,7 +58,7 @@ def main():
             old_release = get_tags.json()
             release_id = old_release['id']
             del_req = requests.delete(
-                f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases/{release_id}",
+                f"https://api.github.com/repos/Olafcio1/CornSeeker/releases/{release_id}",
                 headers={
                     "Authorization": f"Bearer {GITHUB_TOKEN}"
                 }
@@ -66,7 +66,7 @@ def main():
 
         # New release
         req = requests.post(
-            f"https://api.github.com/repos/DAMcraft/MeteorServerSeeker/releases",
+            f"https://api.github.com/repos/Olafcio1/CornSeeker/releases",
             headers={
                 'Authorization': f'Bearer {GITHUB_TOKEN}'
             },
@@ -85,7 +85,7 @@ def main():
 
         # Upload jar
         requests.post(
-            f"https://uploads.github.com/repos/DAMcraft/MeteorServerSeeker/releases/{release_id}/assets?name={jar}",
+            f"https://uploads.github.com/repos/Olafcio1/CornSeeker/releases/{release_id}/assets?name={jar}",
             headers={
                 'Authorization': f'Bearer {GITHUB_TOKEN}',
                 'Content-Type': 'application/jar'
