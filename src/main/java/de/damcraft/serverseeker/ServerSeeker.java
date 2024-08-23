@@ -34,7 +34,7 @@ public class ServerSeeker extends MeteorAddon {
     add(new Join misconfigured BungeeCord backends with any name you want!())
      */
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("ServerSeeker", Items.SPYGLASS.getDefaultStack());
+    public static final Category CATEGORY = new Category("CornSeeker", Items.SPYGLASS.getDefaultStack());
     public static final Map<String, Country> COUNTRY_MAP = new Object2ReferenceOpenHashMap<>();
 
     public static final Gson gson = new Gson();
@@ -43,7 +43,7 @@ public class ServerSeeker extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        LOG.info("Loaded the CornSeeker addon! Seek my bollz plz");
+        LOG.info("Loaded the CornSeeker addon! Seek my bollz plz :o\n\n\n\n\n\nI like you ;D\n\n\n\n");
 
         // Load countries
         Countries.init();

@@ -14,14 +14,14 @@ public class ServerSeekerScreen extends WindowScreen {
     private final MultiplayerScreen multiplayerScreen;
 
     public ServerSeekerScreen(MultiplayerScreen multiplayerScreen) {
-        super(GuiThemes.get(), "ServerSeeker");
+        super(GuiThemes.get(), "CornSeeker");
         this.multiplayerScreen = multiplayerScreen;
     }
 
     @Override
     public void initWidgets() {
         WHorizontalList accountList = add(theme.horizontalList()).expandX().widget();
-        accountList.add(theme.label("")).expandX();
+        accountList.add(theme.label("Service provided by Cornbread 2100 x OlafcioooX")).expandX();
         WTable userInfoList = add(theme.table()).widget();
 
         userInfoList.add(theme.label("ur sexiness: "));

@@ -180,7 +180,7 @@ public class ServersRequest {
 
             data.add("$or", obj);
         }
-        if (sends_playerlist) {
+        if (sends_playerlist != null && sends_playerlist) {
             var sample = new JsonObject();
             sample.addProperty("$exists", true);
             var ns = new JsonObject();
@@ -190,7 +190,7 @@ public class ServersRequest {
         }
         var lastseen = new JsonObject();
         lastseen.addProperty("$gte", Calendar.getInstance().getTime().getTime() - Calendar.HOUR);
-        data.add("lastSeen", lastseen);
+//        data.add("lastSeen", lastseen);
 //        if (ipSubnetEnabled) {
 //            const [ip, range] = ipSubnet.value.split('/');
 //            const ipCount = 2**(32 - range)
@@ -212,6 +212,7 @@ public class ServersRequest {
 //        }
 //        if (portEnabled) mongoFilter['port'] = port.value;
         if (cracked != null) data.addProperty("cracked", cracked);
-        return "?query=" + EncodingUtil.encodeURIComponent(new Gson().toJson(data));//{%22players.online%22:{%22$gte%22:1,%22$lte%22:11},%22players.max%22:2,%22$expr%22:{%22$ne%22:[%22$players.online%22,%22$players.max%22]},%22players.sample.name%22:%22HackerFC12%22,%22version.name%22:{%22$regex%22:%22^Vanilla%22,%22$options%22:%22i%22},%22version.protocol%22:757,%22$or%22:[{%22description%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.extra.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}}],%22players.sample%22:{%22$exists%22:true,%22$not%22:{%22$size%22:0}},%22lastSeen%22:{%22$gte%22:1724400000},%22ip%22:{%22$regex%22:%22^test.undefined.undefined.undefined$%22,%22$options%22:%22i%22},%22cracked%22:true}";
+        var dataStr = new Gson().toJson(data);
+        return "?query=" + EncodingUtil.encodeURIComponent(dataStr);//{%22players.online%22:{%22$gte%22:1,%22$lte%22:11},%22players.max%22:2,%22$expr%22:{%22$ne%22:[%22$players.online%22,%22$players.max%22]},%22players.sample.name%22:%22HackerFC12%22,%22version.name%22:{%22$regex%22:%22^Vanilla%22,%22$options%22:%22i%22},%22version.protocol%22:757,%22$or%22:[{%22description%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.extra.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}}],%22players.sample%22:{%22$exists%22:true,%22$not%22:{%22$size%22:0}},%22lastSeen%22:{%22$gte%22:1724400000},%22ip%22:{%22$regex%22:%22^test.undefined.undefined.undefined$%22,%22$options%22:%22i%22},%22cracked%22:true}";
     }
 }

@@ -22,9 +22,9 @@ public class WhereisRequest {
         playerSearchValue = uuid;
     }
 
-    public String json() {
+    public String query() {
         JsonObject jo = new JsonObject();
-        jo.addProperty(playerSearchType.name().toLowerCase(), playerSearchValue);
+        jo.addProperty("players.sample.name", playerSearchValue);
         return jo.toString();
     }
 }
