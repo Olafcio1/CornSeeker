@@ -7,6 +7,7 @@ import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.hud.HistoricPlayersHud;
 import de.damcraft.serverseeker.modules.BungeeSpoofModule;
+import de.damcraft.serverseeker.modules.ScoreboardPlusPlus;
 import de.damcraft.serverseeker.utils.HistoricPlayersUpdater;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -48,7 +49,9 @@ public class ServerSeeker extends MeteorAddon {
         // Load countries
         Countries.init();
 
-        Modules.get().add(new BungeeSpoofModule());
+        var mods = Modules.get();
+        mods.add(new BungeeSpoofModule());
+        mods.add(new ScoreboardPlusPlus());
         Hud.get().register(HistoricPlayersHud.INFO);
 
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
@@ -69,12 +72,12 @@ public class ServerSeeker extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("DAMcraft", "MeteorServerSeeker");
+        return new GithubRepo("Olafcio1", "CornSeeker");
     }
 
     @Override
     public String getWebsite() {
-        return "https://serverseeker.net/";
+        return "https://olafcio1.github.io/";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.damcraft.serverseeker.ssapi.requests;
 
 import com.google.gson.JsonObject;
+import de.damcraft.serverseeker.EncodingUtil;
 
 public class WhereisRequest {
     private enum PlayerSearchType {
@@ -8,7 +9,7 @@ public class WhereisRequest {
         Uuid
     }
     private PlayerSearchType playerSearchType;
-    private String playerSearchValue;
+    public String playerSearchValue;
     public WhereisRequest() {
 
     }
@@ -25,6 +26,6 @@ public class WhereisRequest {
     public String query() {
         JsonObject jo = new JsonObject();
         jo.addProperty("players.sample.name", playerSearchValue);
-        return jo.toString();
+        return EncodingUtil.encodeURIComponent(jo.toString());
     }
 }
