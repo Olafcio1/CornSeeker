@@ -1,7 +1,7 @@
 package de.damcraft.serverseeker.ssapi.requests;
 
 import com.google.gson.JsonObject;
-import de.damcraft.serverseeker.EncodingUtil;
+import de.damcraft.serverseeker.utils.EncodingUtil;
 
 public class WhereisRequest {
     private enum PlayerSearchType {

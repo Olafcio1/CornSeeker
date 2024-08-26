@@ -3,9 +3,8 @@ package de.damcraft.serverseeker.ssapi.requests;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.damcraft.serverseeker.EncodingUtil;
+import de.damcraft.serverseeker.utils.EncodingUtil;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.Objects;
 

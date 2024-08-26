@@ -1,4 +1,4 @@
-package de.damcraft.serverseeker;
+package de.damcraft.serverseeker.utils;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
