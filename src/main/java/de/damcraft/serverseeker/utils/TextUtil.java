@@ -155,6 +155,11 @@ public class TextUtil {
                 current += ch;
             }
         }
+        var obj = new JsonObject();
+        obj.addProperty("text", current);
+        for (var e : applied.entrySet())
+            obj.add(e.getKey(), e.getValue());
+        data.add(current);
 
         return new MineText(data);
     }

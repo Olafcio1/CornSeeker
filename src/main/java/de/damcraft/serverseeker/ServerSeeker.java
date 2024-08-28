@@ -7,6 +7,8 @@ import de.damcraft.serverseeker.country.Country;
 import de.damcraft.serverseeker.country.CountrySetting;
 import de.damcraft.serverseeker.hud.HistoricPlayersHud;
 import de.damcraft.serverseeker.modules.BungeeSpoofModule;
+import de.damcraft.serverseeker.modules.HideFromMCLOutput;
+import de.damcraft.serverseeker.modules.OPRegionBypass;
 import de.damcraft.serverseeker.modules.ScoreboardPlusPlus;
 import de.damcraft.serverseeker.utils.HistoricPlayersUpdater;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
@@ -52,6 +54,8 @@ public class ServerSeeker extends MeteorAddon {
         var mods = Modules.get();
         mods.add(new BungeeSpoofModule());
         mods.add(new ScoreboardPlusPlus());
+        mods.add(new OPRegionBypass());
+        mods.add(new HideFromMCLOutput());
         Hud.get().register(HistoricPlayersHud.INFO);
 
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
