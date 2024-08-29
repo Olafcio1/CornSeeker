@@ -2,8 +2,9 @@ package de.damcraft.serverseeker.utils;
 
 import de.damcraft.serverseeker.SmallHttp;
 import de.damcraft.serverseeker.hud.HistoricPlayersHud;
-import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
-import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.Server;
+import de.damcraft.serverseeker.ssapi.Servers;
+import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
 import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
@@ -45,16 +46,26 @@ public class HistoricPlayersUpdater {
         String ip = addressParts[1].split(":")[0];
         Integer port = Integer.valueOf(addressParts[1].split(":")[1]);
 
-        ServerInfoRequest request = new ServerInfoRequest();
-        request.setIpPort(ip, port);
+        var request = new ServersRequest();
+        request.setIpSubnet(ip);
+        request.setPort(port);
 
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", request.json());
+        String jsonResp = SmallHttp.get("https://api.cornbread2100.com/servers" + request.query());
 
-        ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
+        var resp = Servers.parseJSON(jsonResp);
+        Server server = null;
+        for (var s : resp) {
+            if (Objects.equals(s.ip, ip) && s.port == port.doubleValue()) {
+                server = s;
+                break;
+            }
+        }
+        if (server == null)
+            return;
 
         for (HistoricPlayersHud hud : huds) {
-            hud.players = Objects.requireNonNullElseGet(resp.players, List::of);
-            hud.isCracked = resp.cracked != null && resp.cracked;
+            hud.players = Objects.requireNonNullElseGet(server.players.samples(), List::of);
+            hud.isCracked = server.cracked != null && server.cracked;
         }
     }
 }

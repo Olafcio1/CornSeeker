@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "serverseeker",
+  "id": "cornseeker",
   "version": "${version}",
   "name": "CornSeeker",
   "description": "Search for basically any Minecraft server that exists. Reborn.",

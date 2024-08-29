@@ -239,36 +239,43 @@ public class FindNewServersScreen extends WindowScreen {
         .build()
     );
 
-    private final Setting<Boolean> onlyBungeeSpoofable = sg.add(new BoolSetting.Builder()
-        .name("only-bungee-spoofable")
-        .description("Will only give you servers where you can use BungeeSpoof")
-        .defaultValue(false)
+    private final Setting<String> ipSubnet = sg.add(new StringSetting.Builder()
+        .name("ip-subnet")
+        .description("Will only give you servers from the specified subnet.")
+        .defaultValue("")
         .build()
     );
 
-    private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
-        .name("geo-search-type")
-        .description("Whether to search by ASN or country code")
-        .defaultValue(GeoSearchType.Country)
+    private final Setting<Integer> port = sg.add(new IntSetting.Builder()
+        .name("port")
+        .description("Will only give you servers with this port.")
+        .defaultValue(null)
         .build()
     );
 
-    private final Setting<Integer> asnNumberSetting = sg.add(new IntSetting.Builder()
-        .name("asn")
-        .description("The ASN of the server")
-        .defaultValue(24940)
-        .noSlider()
-        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.ASN)
-        .build()
-    );
-
-    private final Setting<Country> countrySetting = sg.add(new CountrySetting.Builder()
-        .name("country")
-        .description("The country the server should be located in")
-        .defaultValue(ServerSeeker.COUNTRY_MAP.get("UN"))
-        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country)
-        .build()
-    );
+//    private final Setting<GeoSearchType> geoSearchTypeSetting = sg.add(new EnumSetting.Builder<GeoSearchType>()
+//        .name("geo-search-type")
+//        .description("Whether to search by ASN or country code")
+//        .defaultValue(GeoSearchType.Country)
+//        .build()
+//    );
+//
+//    private final Setting<Integer> asnNumberSetting = sg.add(new IntSetting.Builder()
+//        .name("asn")
+//        .description("The ASN of the server")
+//        .defaultValue(24940)
+//        .noSlider()
+//        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.ASN)
+//        .build()
+//    );
+//
+//    private final Setting<Country> countrySetting = sg.add(new CountrySetting.Builder()
+//        .name("country")
+//        .description("The country the server should be located in")
+//        .defaultValue(ServerSeeker.COUNTRY_MAP.get("UN"))
+//        .visible(() -> geoSearchTypeSetting.get() == GeoSearchType.Country)
+//        .build()
+//    );
 
 
     MultiplayerScreen multiplayerScreen;
@@ -288,7 +295,7 @@ public class FindNewServersScreen extends WindowScreen {
         add(theme.button("Reset all")).expandX().widget().action = this::resetSettings;
         findButton = add(theme.button("Find")).expandX().widget();
         findButton.action = () -> {
-            ServersRequest request = new ServersRequest();
+            var request = new ServersRequest();
 
             switch (onlinePlayersNumTypeSetting.get()) {
                 // [n, "inf"]
@@ -319,13 +326,13 @@ public class FindNewServersScreen extends WindowScreen {
             }
 
 
-            switch (geoSearchTypeSetting.get()) {
-                case ASN -> request.setAsn(asnNumberSetting.get());
-                case Country -> {
-                    if (countrySetting.get().name.equalsIgnoreCase("any")) break;
-                    request.setCountryCode(countrySetting.get().code);
-                }
-            }
+//            switch (geoSearchTypeSetting.get()) {
+//                case ASN -> request.setAsn(asnNumberSetting.get());
+//                case Country -> {
+//                    if (countrySetting.get().name.equalsIgnoreCase("any")) break;
+//                    request.setCountryCode(countrySetting.get().code);
+//                }
+//            }
 
             request.setCracked(crackedSetting.get().toBoolOrNull());
             request.setDescription(descriptionSetting.get());
@@ -347,8 +354,8 @@ public class FindNewServersScreen extends WindowScreen {
 
             if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
             if (sendsPlayerlist.get()) request.setSendsPlayerlist(true);
-            if (onlyBungeeSpoofable.get()) request.setOnlyBungeeSpoofable(true);
-
+            if (ipSubnet.get() != null && !Objects.equals(ipSubnet.get(), "")) request.setIpSubnet(ipSubnet.get());
+            if (port.get() != null && !Objects.equals(port.get(), "")) request.setPort(port.get());
 
             this.locked = true;
 
