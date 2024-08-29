@@ -249,7 +249,7 @@ public class FindNewServersScreen extends WindowScreen {
     private final Setting<Integer> port = sg.add(new IntSetting.Builder()
         .name("port")
         .description("Will only give you servers with this port.")
-        .defaultValue(null)
+        .defaultValue(0)
         .build()
     );
 
@@ -355,7 +355,7 @@ public class FindNewServersScreen extends WindowScreen {
             if (!onlineOnlySetting.get()) request.setOnlineAfter(0);
             if (sendsPlayerlist.get()) request.setSendsPlayerlist(true);
             if (ipSubnet.get() != null && !Objects.equals(ipSubnet.get(), "")) request.setIpSubnet(ipSubnet.get());
-            if (port.get() != null && !Objects.equals(port.get(), "")) request.setPort(port.get());
+            if (port.get() != null && port.get() != 0) request.setPort(port.get());
 
             this.locked = true;
 
