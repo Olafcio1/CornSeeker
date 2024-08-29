@@ -18,8 +18,9 @@ public class ServersRequest {
     private JsonArray online_players;
     private Integer protocol;
     private Boolean sends_playerlist;
-    private Boolean only_bungeespoofable;
 
+    private String ip_subnet;
+    private Integer port;
     private String software;
 
     public void setAsn(Integer asn) {
@@ -88,8 +89,12 @@ public class ServersRequest {
         this.sends_playerlist = sends;
     }
 
-    public void setOnlyBungeeSpoofable(Boolean only) {
-        this.only_bungeespoofable = only;
+    public void setIpSubnet(String ipSubnet) {
+        this.ip_subnet = ipSubnet;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public String query() {
@@ -211,6 +216,14 @@ public class ServersRequest {
 //        }
 //        if (portEnabled) mongoFilter['port'] = port.value;
         if (cracked != null) data.addProperty("cracked", cracked);
+        // fetch("https://api.cornbread2100.com/servers?query={%22ip%22:{%22$regex%22:%22^1.1.1.1$%22,%22$options%22:%22i%22}}"
+        if (ip_subnet != null) {
+            var obj = new JsonObject();
+            obj.addProperty("$regex", ip_subnet);
+            obj.addProperty("$options", "i");
+            data.add("ip", obj);
+        }
+        if (port != null) data.addProperty("port", port.toString());
         var dataStr = new Gson().toJson(data);
         return "?query=" + EncodingUtil.encodeURIComponent(dataStr);//{%22players.online%22:{%22$gte%22:1,%22$lte%22:11},%22players.max%22:2,%22$expr%22:{%22$ne%22:[%22$players.online%22,%22$players.max%22]},%22players.sample.name%22:%22HackerFC12%22,%22version.name%22:{%22$regex%22:%22^Vanilla%22,%22$options%22:%22i%22},%22version.protocol%22:757,%22$or%22:[{%22description%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}},{%22description.extra.text%22:{%22$regex%22:%22testing!%22,%22$options%22:%22i%22}}],%22players.sample%22:{%22$exists%22:true,%22$not%22:{%22$size%22:0}},%22lastSeen%22:{%22$gte%22:1724400000},%22ip%22:{%22$regex%22:%22^test.undefined.undefined.undefined$%22,%22$options%22:%22i%22},%22cracked%22:true}";
     }

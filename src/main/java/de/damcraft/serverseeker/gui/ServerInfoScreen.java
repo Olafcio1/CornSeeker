@@ -2,8 +2,10 @@ package de.damcraft.serverseeker.gui;
 
 import com.google.common.net.HostAndPort;
 import de.damcraft.serverseeker.SmallHttp;
+import de.damcraft.serverseeker.ssapi.Server;
+import de.damcraft.serverseeker.ssapi.Servers;
 import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
-import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
@@ -18,7 +20,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
+import java.util.Objects;
 
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 public class ServerInfoScreen extends WindowScreen {
@@ -32,26 +34,36 @@ public class ServerInfoScreen extends WindowScreen {
     @Override
     public void initWidgets() {
         add(theme.label("Fetching server info..."));
-        ServerInfoRequest request = new ServerInfoRequest();
+        var request = new ServersRequest();
         HostAndPort hap = HostAndPort.fromString(serverIp);
-        request.setIpPort(hap.getHost(), hap.getPort());
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", request.json());
-        ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
-        if (resp.isError()) {
+        request.setIpSubnet(hap.getHost());
+        request.setPort(hap.getPort());
+        String jsonResp = SmallHttp.get("https://api.cornbread2100.com/servers" + request.query());
+        var resp = Servers.parseJSON(jsonResp);
+
+        Server server = null;
+        for (var s : resp) {
+            if (Objects.equals(s.ip, hap.getHost()) && s.port == hap.getPort()) {
+                server = s;
+                break;
+            }
+        }
+
+        if (server == null) {
             clear();
-            add(theme.label(resp.error)).expandX();
+            add(theme.label("Server couldn't be found.")).expandX();
             return;
         }
         clear();
 
-        Boolean cracked = resp.cracked;
-        String description = resp.description;
-        int onlinePlayers = resp.online_players;
-        int maxPlayers = resp.max_players;
-        int protocol = resp.protocol;
-        int lastSeen = resp.last_seen;
-        String version = resp.version;
-        List<ServerInfoResponse.Player> players = resp.players;
+        Boolean cracked = server.cracked;
+        String description = server.description.text();
+        Double onlinePlayers = server.players.online();
+        Double maxPlayers = server.players.max();
+        Double protocol = server.version.protocol();
+        Double lastSeen = server.lastSeen;
+        String version = server.version.name();
+        var players = server.players.samples();
 
         WTable dataTable = add(theme.table()).widget();
         WTable playersTable = add(theme.table()).expandX().widget();
@@ -77,7 +89,7 @@ public class ServerInfoScreen extends WindowScreen {
 
         dataTable.add(theme.label("Last Seen: "));
         String lastSeenDate = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-            .format(Instant.ofEpochSecond(lastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
+            .format(Instant.ofEpochSecond(lastSeen.longValue()).atZone(ZoneId.systemDefault()).toLocalDateTime());
         dataTable.add(theme.label(lastSeenDate));
         dataTable.row();
 
@@ -98,9 +110,9 @@ public class ServerInfoScreen extends WindowScreen {
         playersTable.add(theme.horizontalSeparator()).expandX();
         playersTable.row();
 
-        for (ServerInfoResponse.Player player : players) {
-            String name = player.name;
-            long playerLastSeen = player.last_seen;
+        for (var player : players) {
+            String name = player.name();
+            long playerLastSeen = player.lastSeen();
             String lastSeenFormatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .format(Instant.ofEpochSecond(playerLastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
 

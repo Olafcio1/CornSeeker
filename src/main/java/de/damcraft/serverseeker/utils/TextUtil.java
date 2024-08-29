@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
+import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.utils.misc.MeteorStarscript;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -87,12 +89,12 @@ public class TextUtil {
             this.put("e", "color:yellow");
             this.put("a", "color:light_green");
             this.put("2", "color:dark_green");
-            this.put("b", "color:??");
+            this.put("b", "color:aqua");
             this.put("9", "color:blue");
-            this.put("3", "color:???");
+            this.put("3", "color:dark_aqua");
             this.put("1", "color:dark_blue");
-            this.put("d", "color:???");
-            this.put("5", "color:???");
+            this.put("d", "color:light_purple");
+            this.put("5", "color:dark_purple");
             this.put("7", "color:gray");
             this.put("8", "color:dark_gray");
             this.put("0", "color:black");
@@ -133,21 +135,23 @@ public class TextUtil {
         for (var ch : spl) {
             if (inColor) {
                 if (styles.get(ch) != null) {
-                    var s = styles.get(ch).split(":");
+                    @NotNull var s = styles.get(ch).split(":");
                     if (s[0] == "color") {
                         if (current != "") {
                             var obj = new JsonObject();
                             obj.addProperty("text", current);
                             for (var e : applied.entrySet())
                                 obj.add(e.getKey(), e.getValue());
-                            data.add(current);
+                            data.add(obj);
+                            applied = new JsonObject();
                             current = "";
                         }
-                    } else if (s[1] == "true")
+                        applied.addProperty("color", s[1]);
+                    } else if (s[1] == "true") {
                         applied.addProperty(s[0], true);
-                    else if (s[1] == "false")
+                    } else if (s[1] == "false") {
                         applied.addProperty(s[0], false);
-                    else applied.addProperty(s[0], s[1]);
+                    } else applied.addProperty(s[0], s[1]);
                 } else current += "&" + ch;
             } else if (ch == "&") {
                 inColor = true;
@@ -155,11 +159,12 @@ public class TextUtil {
                 current += ch;
             }
         }
+
         var obj = new JsonObject();
         obj.addProperty("text", current);
         for (var e : applied.entrySet())
             obj.add(e.getKey(), e.getValue());
-        data.add(current);
+        data.add(obj);
 
         return new MineText(data);
     }

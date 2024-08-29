@@ -1,8 +1,10 @@
 package de.damcraft.serverseeker.gui;
 
+import com.google.gson.JsonSyntaxException;
 import de.damcraft.serverseeker.SmallHttp;
-import de.damcraft.serverseeker.ssapi.requests.ServerInfoRequest;
-import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.Server;
+import de.damcraft.serverseeker.ssapi.Servers;
+import de.damcraft.serverseeker.ssapi.requests.ServersRequest;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
@@ -18,9 +20,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 
-import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class GetInfoScreen extends WindowScreen {
@@ -57,30 +59,45 @@ public class GetInfoScreen extends WindowScreen {
         String ip = address.split(":")[0];
         int port = address.split(":").length > 1 ? Integer.parseInt(address.split(":")[1]) : 25565;
 
+        // == THIS IS A SERVERSEEKER COMMENT. IT WILL BE USED FOR ADDING SERVERSEEKER INTEGRATION INTO THIS MOD, CORNSEEKER.
         // Get the players using the API
         /* {
           "api_key": "...", // Your api_key
           "ip": "109.123.240.84", // The ip of the server
           "port": 25565  // The port of the server (defaults to 25565)
         } */
-        ServerInfoRequest request = new ServerInfoRequest();
+        var request = new ServersRequest();
+        request.setIpSubnet(ip);
+        request.setPort(port);
 
-        request.setIpPort(ip, port);
+        var jsonResp = SmallHttp.get("https://api.cornbread2100.com/servers" + request.query());
+        ArrayList<Server> resp;
+        try {
+            resp = Servers.parseJSON(jsonResp);
+        } catch (JsonSyntaxException e) {
+            clear();
+            add(theme.label(jsonResp)).expandX();
+            return;
+        }
 
-        String jsonResp = SmallHttp.post("https://api.serverseeker.net/server_info", request.json());
-
-        ServerInfoResponse resp = gson.fromJson(jsonResp, ServerInfoResponse.class);
+        Server server = null;
+        for (var s : resp) {
+            if (Objects.equals(s.ip, ip) && s.port == port) {
+                server = s;
+                break;
+            }
+        }
 
         // Set error message if there is one
-        if (resp.isError()) {
+        if (server == null) {
             clear();
-            add(theme.label(resp.error)).expandX();
+            add(theme.label("The server couldn't be found.")).expandX();
             return;
         }
 
         clear();
-        List<ServerInfoResponse.Player> players = resp.players;
-        if (players.size() == 0) {
+        var players = server.players.samples();
+        if (players.isEmpty()) {
             clear();
             add(theme.label("No records of players found.")).expandX();
             return;
@@ -92,9 +109,9 @@ public class GetInfoScreen extends WindowScreen {
               "uuid": "68af4d98-24a2-41b6-96bc-a9c2ef9b397b" // The uuid of the player
             }, ...
           ] */
-        boolean cracked = false;
-        if (resp.cracked != null) {
-            cracked = resp.cracked;
+        var cracked = false;
+        if (server.cracked != null) {
+            cracked = server.cracked;
         }
 
         if (!cracked) {
@@ -114,9 +131,9 @@ public class GetInfoScreen extends WindowScreen {
         table.add(theme.horizontalSeparator()).expandX();
         table.row();
 
-        for (ServerInfoResponse.Player player : players) {
-            String name = player.name;
-            long lastSeen = player.last_seen;
+        for (var player : players) {
+            String name = player.name();
+            long lastSeen = player.lastSeen();
             String lastSeenFormatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
                 .format(Instant.ofEpochSecond(lastSeen).atZone(ZoneId.systemDefault()).toLocalDateTime());
 
@@ -149,7 +166,7 @@ public class GetInfoScreen extends WindowScreen {
                     if (!exists) {
                         CrackedAccount account = new CrackedAccount(name);
                         account.login();
-                        Accounts.get().add(account);
+//                        Accounts.get().add(account);
                     }
                     close();
                 };

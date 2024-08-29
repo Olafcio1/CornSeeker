@@ -10,6 +10,7 @@ import de.damcraft.serverseeker.modules.BungeeSpoofModule;
 import de.damcraft.serverseeker.modules.HideFromMCLOutput;
 import de.damcraft.serverseeker.modules.OPRegionBypass;
 import de.damcraft.serverseeker.modules.ScoreboardPlusPlus;
+import de.damcraft.serverseeker.modules.crash.SpigotSkeletonCrash;
 import de.damcraft.serverseeker.utils.HistoricPlayersUpdater;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import meteordevelopment.meteorclient.MeteorClient;
@@ -37,7 +38,13 @@ public class ServerSeeker extends MeteorAddon {
     add(new Join misconfigured BungeeCord backends with any name you want!())
      */
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("CornSeeker", Items.SPYGLASS.getDefaultStack());
+
+    public enum C {
+        ;
+        public static final Category MAIN = new Category("CornSeeker", Items.SPYGLASS.getDefaultStack());
+        public static final Category CRASH = new Category("Crash", Items.BARRIER.getDefaultStack());
+    }
+
     public static final Map<String, Country> COUNTRY_MAP = new Object2ReferenceOpenHashMap<>();
 
     public static final Gson gson = new Gson();
@@ -46,7 +53,7 @@ public class ServerSeeker extends MeteorAddon {
 
     @Override
     public void onInitialize() {
-        LOG.info("Loaded the CornSeeker addon! Seek my bollz plz :o\n\n\n\n\n\nI like you ;D\n\n\n\n");
+        LOG.info("Loaded the CornSeeker addon! Seek my pipi!");
 
         // Load countries
         Countries.init();
@@ -56,6 +63,7 @@ public class ServerSeeker extends MeteorAddon {
         mods.add(new ScoreboardPlusPlus());
         mods.add(new OPRegionBypass());
         mods.add(new HideFromMCLOutput());
+        mods.add(new SpigotSkeletonCrash());
         Hud.get().register(HistoricPlayersHud.INFO);
 
         SettingsWidgetFactory.registerCustomFactory(CountrySetting.class, (theme) -> (table, setting) -> {
@@ -66,7 +74,8 @@ public class ServerSeeker extends MeteorAddon {
     }
     @Override
     public void onRegisterCategories() {
-        Modules.registerCategory(CATEGORY);
+        Modules.registerCategory(C.MAIN);
+        Modules.registerCategory(C.CRASH);
     }
 
     @Override
@@ -88,7 +97,7 @@ public class ServerSeeker extends MeteorAddon {
     public String getCommit() {
         String commit = FabricLoader
             .getInstance()
-            .getModContainer("serverseeker")
+            .getModContainer("cornseeker")
             .get().getMetadata()
             .getCustomValue("github:sha")
             .getAsString();

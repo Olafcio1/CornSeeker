@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Scoreboard++
- * Yes I know I've skidded this code from trouserstreak.
- * BUT I improved it: I added full coloring & auto full width.
+ * Scoreboard++<br/>
+ * Yes I know I've skidded this code from trouserstreak.<br/>
+ * BUT I improved it: I added full coloring, pretty font & auto full width.
  */
 public class ScoreboardPlusPlus extends Module {
-    private final SettingGroup sgTitle = settings.createGroup("Title Options");
-    private final SettingGroup sgContent = settings.createGroup("Content Options");
-    private final SettingGroup sgDisplay = settings.createGroup("Display Options");
+    private final SettingGroup sgTitle = settings.createGroup("Title");
+    private final SettingGroup sgContent = settings.createGroup("Content");
+    private final SettingGroup sgMisc = settings.createGroup("Miscellaneous");
 
     private final Setting<String> title = sgTitle.add(new StringSetting.Builder()
         .name("title")
@@ -52,22 +52,29 @@ public class ScoreboardPlusPlus extends Module {
         .build()
     );
 
-    private final Setting<Boolean> fullWidth = sgDisplay.add(new BoolSetting.Builder()
+    private final Setting<Boolean> fullWidth = sgMisc.add(new BoolSetting.Builder()
         .name("fullwidth")
         .description("If true, makes the scoreboard fill out the whole screen (use 2 spaces).")
         .defaultValue(true)
         .build()
     );
 
-    private final Setting<Boolean> prettyFont = sgDisplay.add(new BoolSetting.Builder()
+    private final Setting<Boolean> prettyFont = sgMisc.add(new BoolSetting.Builder()
         .name("prettyfont")
         .description("If true, makes the scoreboard use a pretty font.")
         .defaultValue(true)
         .build()
     );
 
+    private final Setting<Boolean> bukkitServer = sgMisc.add(new BoolSetting.Builder()
+        .name("bukkit-server")
+        .description("Adds the /minecraft: prefix to all commands.")
+        .defaultValue(false)
+        .build()
+    );
+
     public ScoreboardPlusPlus() {
-        super(ServerSeeker.CATEGORY, "scoreboard++", "Automatically creates a huge scoreboard with specified data. Credits to TrouserStreak.");
+        super(ServerSeeker.C.MAIN, "scoreboard++", "Automatically creates a huge scoreboard with specified data. Credits to TrouserStreak.");
     }
 
     @EventHandler
@@ -77,12 +84,16 @@ public class ScoreboardPlusPlus extends Module {
         var title = this.title.get();
         var data = TextUtil.colorsJson(title);
 //        title = MeteorStarscript.run(MeteorStarscript.compile(title));
-        data = data.starscript();
+//        data = data.starscript();
         if (prettyFont.get())
             data = data.smallcaps();
         title = data.toString();
 
-        var cmd = "/scoreboard objectives add " + scoreboardName + " dummy " + title;
+        var prefix = "/";
+        if (bukkitServer.get())
+            prefix += "minecraft:";
+
+        var cmd = prefix + "scoreboard objectives add " + scoreboardName + " dummy " + title;
         if (cmd.length() <= 256) {
             ChatUtils.sendPlayerMsg(cmd);
         } else {
@@ -92,39 +103,41 @@ public class ScoreboardPlusPlus extends Module {
             return;
         }
 
-        ChatUtils.sendPlayerMsg("/scoreboard objectives setdisplay sidebar " + scoreboardName);
-        ChatUtils.sendPlayerMsg("/scoreboard objectives modify " + scoreboardName + " numberformat blank");
+        ChatUtils.sendPlayerMsg(prefix + "scoreboard objectives setdisplay sidebar " + scoreboardName);
+        ChatUtils.sendPlayerMsg(prefix + "scoreboard objectives modify " + scoreboardName + " numberformat blank");
 
         var i = content.get().size();
         for (var string : content.get()) {
             var team = RandomStringUtils.randomAlphabetic(10).toLowerCase();
-            ChatUtils.sendPlayerMsg("/team add " + team);
+            ChatUtils.sendPlayerMsg(prefix + "team add " + team);
 
-            if (fullWidth.get())
-                string = string.replace("  ", " ".repeat(129 - string.length() + 2));
-
-            if (!Objects.equals(string, "")) {
-                var data2 = TextUtil.colorsJson(" " + title);
-//                string = MeteorStarscript.run(MeteorStarscript.compile(string));
-                data2 = data2.starscript();
+            if (Objects.equals(string, "")) {
+                string = "\"\"";
+            } else {
+                var data2 = TextUtil.colorsJson(" " + string);
+                //          string = MeteorStarscript.run(MeteorStarscript.compile(string));
+                //          data2 = data2.starscript();
                 if (prettyFont.get())
                     data2 = data2.smallcaps();
                 string = data2.toString();
+
+                if (fullWidth.get())
+                    string = string.replace("  ", " ".repeat(129 - string.length() + 2));
             }
 
-            var cmd2 = "/team modify " + team + " suffix " + string;
+            var cmd2 = prefix + "team modify " + team + " suffix " + string;
             if (cmd2.length() <= 256) {
                 ChatUtils.sendPlayerMsg(cmd2);
             } else {
                 var removeChars = cmd2.length()-256;
-                error("This content line is too long ("+ MeteorStarscript.run(MeteorStarscript.compile(string))+"). Shorten it by "+removeChars+" characters.");
+                error("This content line is too long ("+string+"). Shorten it by "+removeChars+" characters.");
                 toggle();
                 return;
             }
 
-            ChatUtils.sendPlayerMsg("/team modify " + team + " color black");
-            ChatUtils.sendPlayerMsg("/team join " + team + " " + i);
-            ChatUtils.sendPlayerMsg("/scoreboard players set " + i + " " + scoreboardName + " " + i);
+            ChatUtils.sendPlayerMsg(prefix + "team modify " + team + " color black");
+            ChatUtils.sendPlayerMsg(prefix + "team join " + team + " " + i);
+            ChatUtils.sendPlayerMsg(prefix + "scoreboard players set " + i + " " + scoreboardName + " " + i);
             i--;
         }
         toggle();

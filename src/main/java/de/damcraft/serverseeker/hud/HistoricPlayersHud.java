@@ -1,6 +1,6 @@
 package de.damcraft.serverseeker.hud;
 
-import de.damcraft.serverseeker.ssapi.responses.ServerInfoResponse;
+import de.damcraft.serverseeker.ssapi.Server;
 import de.damcraft.serverseeker.utils.HistoricPlayersUpdater;
 import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.settings.*;
@@ -15,7 +15,7 @@ import java.util.List;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class HistoricPlayersHud extends HudElement {
-    public List<ServerInfoResponse.Player> players = List.of();
+    public List<Server.PlayerList.SamplePlayer> players = List.of();
     public Boolean isCracked = false;
 
     public final static HudElementInfo<HistoricPlayersHud> INFO = new HudElementInfo<>(Hud.GROUP, "historic-players", "Displays players that were on this server in the past.", HistoricPlayersHud::new);
@@ -117,17 +117,17 @@ public class HistoricPlayersHud extends HudElement {
             }
         }
         // Sort players by join time (newest first)
-        List<ServerInfoResponse.Player> players = new ArrayList<>(this.players);
-        Collections.sort(players, (b, a) -> a.last_seen.compareTo(b.last_seen));
-        for (ServerInfoResponse.Player player : players) {
-            if (alreadyDisplayed.contains(player.uuid)) continue;
+        var players = new ArrayList<>(this.players);
+        Collections.sort(players, (b, a) -> a.lastSeen().compareTo(b.lastSeen()));
+        for (var player : players) {
+            if (alreadyDisplayed.contains(player.id())) continue;
             if (line >= limit.get()) {
                 more++;
                 continue;
             }
             // Convert last_seen to a human-readable format
             String unit = "s";
-            double last_seen = (int) (System.currentTimeMillis() / 1000 - player.last_seen);
+            double last_seen = (int) (System.currentTimeMillis() / 1000 - player.lastSeen());
             if (last_seen >= 60) {
                 last_seen /= 60;
                 unit = "min";
@@ -151,11 +151,11 @@ public class HistoricPlayersHud extends HudElement {
             // Round to 1 decimal place
             last_seen = Math.round(last_seen * 10) / 10.0;
 
-            double width = renderer.textWidth(player.name) + renderer.textWidth(" (" + last_seen + unit + ")");
+            double width = renderer.textWidth(player.name()) + renderer.textWidth(" (" + last_seen + unit + ")");
             double offset = alignX(width, alignment.get());
 
-            renderer.text(player.name, x + offset, y + line * renderer.textHeight(), historicPlayersColor.get(), true);
-            renderer.text(" (" + last_seen + unit + ")", x + offset + renderer.textWidth(player.name), y + line * renderer.textHeight(), historicPlayersLastSeenColor.get(), true);
+            renderer.text(player.name(), x + offset, y + line * renderer.textHeight(), historicPlayersColor.get(), true);
+            renderer.text(" (" + last_seen + unit + ")", x + offset + renderer.textWidth(player.name()), y + line * renderer.textHeight(), historicPlayersLastSeenColor.get(), true);
             line++;
 
             if (width > longestLine) longestLine = width;
