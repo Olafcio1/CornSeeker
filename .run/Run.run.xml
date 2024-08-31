@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--no-rebuild --stacktrace --build-cache --offline" />
+      <option name="scriptParameters" value="--no-rebuild --stacktrace --build-cache --offline --warning-mode all" />
       <option name="taskDescriptions">
         <list />
       </option>
