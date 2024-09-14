@@ -30,6 +30,7 @@ public class PaperBookDupe extends Module {
             var contents = (BookScreen.Contents) ch.get(BookScreen.Contents.class);
             contents.pages().add(Text.of(".gg/4dmqcVfQjA OLAFCIO.PL ON FUCKING TOP YA"));
             ServerSeeker.mc.player.getInventory().dropAll();
+            ServerSeeker.mc.disconnect();
         } else {
             ServerSeeker.mc.player.sendMessage(Text.of("[CornSeeker] Something fucked up in PaperBookDupe!"));
         }
