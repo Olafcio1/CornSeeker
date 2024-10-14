@@ -1,4 +1,4 @@
-<a href="https://github.com/Olafcio1/CornSeeker2100/releases/download/latest/corn-seeker-1.0.jar">
+<a href="https://github.com/Olafcio1/CornSeeker/releases/download/latest/corn-seeker-1.0.jar">
     <img src="https://custom-icon-badges.demolab.com/badge/-Download-55aaaa?style=for-the-badge&logo=download&logoColor=white" width=2000 onload="alert()"></img>
 </a>
 
