@@ -21,16 +21,18 @@ public class ChatSolver extends Module {
         var nickchars = "1234567890qwertyuiopasdfghjklzxvbnm-.+";
         var low = message.toLowerCase();
         var chars = low.split("");
-        for (var ch : chars) {
-            if (step == 0) {
-                if (ch == "<")
-                    step = 1;
-                else return;
-            } else if (step == 1) {
-                if (ch == ">" || !nickchars.contains(ch))
-                    return;
-            }
-        }
+        if (message.startsWith("<") || (!message.contains("chat") && !message.contains("game")))
+            return;
+//        for (var ch : chars) {
+//            if (step == 0) {
+//                if (ch == "<")
+//                    step = 1;
+//                else break;
+//            } else if (step == 1) {
+//                if (ch == ">" || !nickchars.contains(ch))
+//                    return;
+//            }
+//        }
 
         ServerSeeker.mc.player.sendMessage(Text.of("[ChatSolver] Analyzing..."));
 
