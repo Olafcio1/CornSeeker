@@ -32,6 +32,7 @@ dependencies {
     // Fabric
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:0.154.0+26.1.2"
 
     // Meteor
     implementation "meteordevelopment:meteor-client:${project.meteor_version}"
