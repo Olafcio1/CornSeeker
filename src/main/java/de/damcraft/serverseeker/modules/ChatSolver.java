@@ -40,7 +40,7 @@ public class ChatSolver extends Module {
         var found = false;
         for (var l : lines) {
             var t = getTargetString(l.split(""));
-            if (t == "")
+            if (t.isEmpty())
                 continue;
 
             if (l.contains("solve") || l.contains("math")) {
@@ -66,22 +66,22 @@ public class ChatSolver extends Module {
     private static @NotNull String getTargetString(String[] chars) {
         var inColor = false;
         var inBrackets = false;
-        var t = "";
+        var t = new StringBuilder();
         var normal = "`1234567890qwertyuiopasdfghjklzxvbnm";
         for (var ch : chars)
             if (inBrackets) {
-                if (ch == "]" || ch == ")" || ch == "}" || ch == ">")
+                if (ch.equals("]") || ch.equals(")") || ch.equals("}") || ch.equals(">"))
                     inBrackets = false;
             } else if (inColor) {
                 inColor = false;
-            } else if (ch == "§") {
+            } else if (ch.equals("§")) {
                 inColor = true;
-            } else if (ch == "[" || ch == "(" || ch == "{" || ch == "<") {
+            } else if (ch.equals("[") || ch.equals("(") || ch.equals("{") || ch.equals("<")) {
                 inBrackets = true;
             } else if (/*ch == "|" || ch == ":" || */!normal.contains(ch)) {
-                t = "";
-            } else t += ch;
-        return t.trim();
+                t.setLength(0);
+            } else t.append(ch);
+        return t.toString().trim();
     }
 
     @EventHandler

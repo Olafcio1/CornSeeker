@@ -119,6 +119,7 @@ public class ScoreboardPlusPlus extends Module {
                 //          data2 = data2.starscript();
                 if (prettyFont.get())
                     data2 = data2.smallcaps();
+
                 string = data2.toString();
 
                 if (fullWidth.get())

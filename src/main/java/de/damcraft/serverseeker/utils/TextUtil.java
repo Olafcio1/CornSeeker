@@ -85,7 +85,7 @@ public class TextUtil {
         var styles = new TreeMap<String, String>(){{
             this.put("c", "color:red");
             this.put("4", "color:dark_red");
-            this.put("6", "color:orange");
+            this.put("6", "color:gold");
             this.put("e", "color:yellow");
             this.put("a", "color:light_green");
             this.put("2", "color:dark_green");
@@ -134,10 +134,11 @@ public class TextUtil {
         var applied = new JsonObject();
         for (var ch : spl) {
             if (inColor) {
+                inColor=false;
                 if (styles.get(ch) != null) {
                     @NotNull var s = styles.get(ch).split(":");
-                    if (s[0] == "color") {
-                        if (current != "") {
+                    if (s[0].equals("color")) {
+                        if (!current.isEmpty()) {
                             var obj = new JsonObject();
                             obj.addProperty("text", current);
                             for (var e : applied.entrySet())
@@ -147,13 +148,13 @@ public class TextUtil {
                             current = "";
                         }
                         applied.addProperty("color", s[1]);
-                    } else if (s[1] == "true") {
+                    } else if (s[1].equals("true")) {
                         applied.addProperty(s[0], true);
-                    } else if (s[1] == "false") {
+                    } else if (s[1].equals("false")) {
                         applied.addProperty(s[0], false);
                     } else applied.addProperty(s[0], s[1]);
                 } else current += "&" + ch;
-            } else if (ch == "&") {
+            } else if (ch.equals("&")) {
                 inColor = true;
             } else {
                 current += ch;
