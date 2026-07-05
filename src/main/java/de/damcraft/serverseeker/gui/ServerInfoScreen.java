@@ -122,6 +122,6 @@ public class ServerInfoScreen extends WindowScreen {
         }
         WButton joinServerButton = add(theme.button("Join this Server")).expandX().widget();
         joinServerButton.action = ()
-            -> ConnectScreen.connect(new TitleScreen(), Minecraft.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerData("a", hap.toString(), ServerData.Type.OTHER), false, null);
+            -> ConnectScreen.startConnecting(new TitleScreen(), Minecraft.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerData("a", hap.toString(), ServerData.Type.OTHER), false, null);
     }
 }

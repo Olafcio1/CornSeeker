@@ -481,7 +481,7 @@ public class FindNewServersScreen extends WindowScreen {
             HostAndPort hap = HostAndPort.fromString(serverIP);
 
             joinServerButton.action = ()
-                -> ConnectScreen.connect(new TitleScreen(), Minecraft.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerData("a", hap.toString(), ServerData.Type.OTHER), false, null);
+                -> ConnectScreen.startConnecting(new TitleScreen(), Minecraft.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerData("a", hap.toString(), ServerData.Type.OTHER), false, null);
 
             WButton serverInfoButton = theme.button("Server Info");
             serverInfoButton.action = () -> this.minecraft.setScreen(new ServerInfoScreen(serverIP));
