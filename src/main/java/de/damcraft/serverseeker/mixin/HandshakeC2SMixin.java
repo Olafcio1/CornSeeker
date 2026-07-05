@@ -27,13 +27,13 @@ public abstract class HandshakeC2SMixin {
     private String hostName;
 
     @Shadow
-    public abstract ClientIntent intendedState();
+    public abstract ClientIntent intention();
 
     @Inject(method = "<init>(ILjava/lang/String;ILnet/minecraft/network/protocol/handshake/ClientIntent;)V", at = @At("RETURN"))
     private void onHandshakeC2SPacket(int i, String string, int j, ClientIntent connectionIntent, CallbackInfo ci) {
         BungeeSpoofModule bungeeSpoofModule = Modules.get().get(BungeeSpoofModule.class);
         if (!bungeeSpoofModule.isActive()) return;
-        if (this.intendedState() != ClientIntent.LOGIN) return;
+        if (this.intention() != ClientIntent.LOGIN) return;
         ServerSeeker.LOG.info("Spoofing bungeecord handshake packet");
         String spoofedUUID = mc.getUser().getProfileId().toString();
 
