@@ -4,7 +4,7 @@ import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.network.packet.c2s.play.AcknowledgeChunksC2SPacket;
+import net.minecraft.network.protocol.game.ServerboundChunkBatchReceivedPacket;
 
 public class ChunkCrash extends Module {
     public ChunkCrash() {
@@ -13,7 +13,7 @@ public class ChunkCrash extends Module {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        var packet = new AcknowledgeChunksC2SPacket(34);
-        ServerSeeker.mc.player.networkHandler.sendPacket(packet);
+        var packet = new ServerboundChunkBatchReceivedPacket(34);
+        ServerSeeker.mc.player.connection.send(packet);
     }
 }

@@ -29,12 +29,12 @@ public class WCountry extends WWidget {
         Texture texture = this.country.getTexture();
         if (texture == null) return;
 
-        int wanted_height = (int) (super.width * texture.height / texture.width);
+        int wanted_height = (int) (super.width * texture.getHeight() / texture.getWidth());
 
         // Center y
         int wanted_y = (int) (y + (super.height - wanted_height) / 2);
 
-        if (texture.isValid()) {
+        if (!texture.getTextureView().isClosed()) {
             renderer.texture(x, wanted_y, super.width, wanted_height, 0, texture);
         }
     }

@@ -2,8 +2,8 @@ package de.damcraft.serverseeker.mixin;
 
 import de.damcraft.serverseeker.gui.InstallMeteorScreen;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +16,7 @@ public class TitleScreenMixin {
         // Check if meteor-client is installed
         if (!FabricLoader.getInstance().isModLoaded("meteor-client")) {
             info.cancel();
-            MinecraftClient.getInstance().setScreen(new InstallMeteorScreen());
+            Minecraft.getInstance().setScreen(new InstallMeteorScreen());
         }
     }
 }

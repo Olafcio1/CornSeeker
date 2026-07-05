@@ -5,8 +5,8 @@ import de.damcraft.serverseeker.ServerSeeker;
 import de.damcraft.serverseeker.modules.BungeeSpoofModule;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.utils.network.Http;
-import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
-import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
+import net.minecraft.network.protocol.handshake.ClientIntent;
+import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -18,26 +18,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static de.damcraft.serverseeker.ServerSeeker.gson;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
-@Mixin(HandshakeC2SPacket.class)
+@Mixin(ClientIntentionPacket.class)
 public abstract class HandshakeC2SMixin {
 
     @Mutable
     @Shadow
     @Final
-    private String address;
+    private String hostName;
 
     @Shadow
-    public abstract ConnectionIntent intendedState();
+    public abstract ClientIntent intendedState();
 
-    @Inject(method = "<init>(ILjava/lang/String;ILnet/minecraft/network/packet/c2s/handshake/ConnectionIntent;)V", at = @At("RETURN"))
-    private void onHandshakeC2SPacket(int i, String string, int j, ConnectionIntent connectionIntent, CallbackInfo ci) {
+    @Inject(method = "<init>(ILjava/lang/String;ILnet/minecraft/network/protocol/handshake/ClientIntent;)V", at = @At("RETURN"))
+    private void onHandshakeC2SPacket(int i, String string, int j, ClientIntent connectionIntent, CallbackInfo ci) {
         BungeeSpoofModule bungeeSpoofModule = Modules.get().get(BungeeSpoofModule.class);
         if (!bungeeSpoofModule.isActive()) return;
-        if (this.intendedState() != ConnectionIntent.LOGIN) return;
+        if (this.intendedState() != ClientIntent.LOGIN) return;
         ServerSeeker.LOG.info("Spoofing bungeecord handshake packet");
-        String spoofedUUID = mc.getSession().getUuidOrNull().toString();
+        String spoofedUUID = mc.getUser().getProfileId().toString();
 
-        String URL = "https://api.mojang.com/users/profiles/minecraft/" + mc.getSession().getUsername();
+        String URL = "https://api.mojang.com/users/profiles/minecraft/" + mc.getUser().getName();
 
         Http.Request request = Http.get(URL);
         String response = request.sendString();
@@ -49,6 +49,6 @@ public abstract class HandshakeC2SMixin {
             }
         }
 
-        this.address += "\u0000" + bungeeSpoofModule.spoofedAddress.get() + "\u0000" + spoofedUUID;
+        this.hostName += "\u0000" + bungeeSpoofModule.spoofedAddress.get() + "\u0000" + spoofedUUID;
     }
 }

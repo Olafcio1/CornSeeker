@@ -7,6 +7,10 @@ java {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 }
 
+loom {
+    accessWidenerPath = rootProject.file("src/main/resources/serverseeker.accesswidener")
+}
+
 base {
     version = project.mod_version
     group = project.maven_group

@@ -7,15 +7,16 @@ import de.damcraft.serverseeker.utils.NbtUtils;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,26 +32,27 @@ public class SpigotSkeletonCrash extends Module {
     public void onTick(TickEvent.Post e) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.toggle();
 
-        var data = getEntityData();
+        error("SpigotSkeletonCrash is not done yet because fuck no entitydata im not doing that");
+        error("In all seriousness though i have no clue how to do this. in play client a similar module, airstrike, took me a lot of time - because i used that fucking entitydata in it");
+        error("So im sorry but this module did not even fucking work anywhere so i do not wanna implement it (for now)");
 
-        if (ServerSeeker.mc.player.isCreative() || ServerSeeker.mc.player.isInCreativeMode()) {
-            var stack = Items.SKELETON_SPAWN_EGG.getDefaultStack();
-            var compound = NbtUtils.jsonToCompound(data);
-            var constructor = NbtComponent.class.getDeclaredConstructor(NbtCompound.class);
-            constructor.setAccessible(true);
-            var nbt = constructor.newInstance(compound);
-            stack.set(DataComponentTypes.ENTITY_DATA, nbt);
-            ServerSeeker.mc.player.giveItemStack(stack);
-            var pos = ServerSeeker.mc.player.getBlockPos().add(0, -1, 0);
-            ServerSeeker.mc.world.setBlockState(pos, Blocks.STONE.getDefaultState());
-            stack.useOnBlock(new ItemUsageContext(
-                ServerSeeker.mc.player,
-                Hand.MAIN_HAND,
-                new BlockHitResult(pos.toCenterPos(), Direction.DOWN, pos, false)
-            ));
-        } else if (ServerSeeker.mc.player.hasPermissionLevel(2)) {
-            ServerSeeker.mc.player.networkHandler.sendCommand("minecraft:summon skeleton ~ ~ ~ " + gson.toJson(data));
-        }
+//        var data = getEntityData();
+//
+//        if (ServerSeeker.mc.player.isCreative() || ServerSeeker.mc.player.hasInfiniteMaterials()) {
+//            var stack = Items.SKELETON_SPAWN_EGG.getDefaultInstance();
+//            var compound = NbtUtils.jsonToCompound(data);
+//            stack.set(DataComponents.ENTITY_DATA, compound);
+//            ServerSeeker.mc.player.addItem(stack);
+//            var pos = ServerSeeker.mc.player.blockPosition().offset(0, -1, 0);
+//            ServerSeeker.mc.level.setBlockAndUpdate(pos, Blocks.STONE.defaultBlockState());
+//            stack.useOn(new UseOnContext(
+//                ServerSeeker.mc.player,
+//                InteractionHand.MAIN_HAND,
+//                new BlockHitResult(pos.getCenter(), Direction.DOWN, pos, false)
+//            ));
+//        } else if (ServerSeeker.mc.player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS))) {
+//            ServerSeeker.mc.player.connection.sendCommand("minecraft:summon skeleton ~ ~ ~ " + gson.toJson(data));
+//        }
     }
 
     private static @NotNull JsonObject getEntityData() {

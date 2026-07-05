@@ -12,9 +12,9 @@ import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.systems.accounts.Account;
 import meteordevelopment.meteorclient.systems.accounts.Accounts;
 import meteordevelopment.meteorclient.systems.accounts.types.CrackedAccount;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
+import net.minecraft.client.multiplayer.ServerData;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,11 +26,11 @@ import java.util.Objects;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class GetInfoScreen extends WindowScreen {
-    MultiplayerServerListWidget.Entry entry;
+    ServerSelectionList.Entry entry;
 
     private boolean waitingForAuth = false;
 
-    public GetInfoScreen(MultiplayerScreen multiplayerScreen, MultiplayerServerListWidget.Entry entry) {
+    public GetInfoScreen(JoinMultiplayerScreen multiplayerScreen, ServerSelectionList.Entry entry) {
         super(GuiThemes.get(), "Get players");
         this.parent = multiplayerScreen;
         this.entry = entry;
@@ -44,12 +44,12 @@ public class GetInfoScreen extends WindowScreen {
         }
 
         // Get info about the server
-        if (!(entry instanceof MultiplayerServerListWidget.ServerEntry)) {
+        if (!(entry instanceof ServerSelectionList.OnlineServerEntry)) {
             add(theme.label("No server selected"));
             return;
         }
-        ServerInfo serverInfo = ((MultiplayerServerListWidget.ServerEntry) entry).getServer();
-        String address = serverInfo.address;
+        ServerData serverInfo = ((ServerSelectionList.OnlineServerEntry) entry).getServerData();
+        String address = serverInfo.ip;
 
         // Check if the server matches the regex for ip(:port)
         if (!address.matches("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(?::[0-9]{1,5})?$")) {
@@ -140,20 +140,20 @@ public class GetInfoScreen extends WindowScreen {
             table.add(theme.label(name + " "));
             table.add(theme.label(lastSeenFormatted + " "));
 
-            if (mc.getSession().getUsername().equals(name)) {
+            if (mc.getUser().getName().equals(name)) {
                 table.add(theme.label("Logged in")).expandCellX();
             } else {
 
                 WButton loginButton = table.add(theme.button("Login")).widget();
                 // Check if the user is currently logged in
-                if (mc.getSession().getUsername().equals(name)) {
+                if (mc.getUser().getName().equals(name)) {
                     loginButton.visible = false;
                 }
 
                 // Log in the user
                 loginButton.action = () -> {
                     loginButton.visible = false;
-                    if (this.client == null) return;
+                    if (this.minecraft == null) return;
                     // Check if the account already exists
                     boolean exists = false;
                     for (Account<?> account : Accounts.get()) {
@@ -168,7 +168,7 @@ public class GetInfoScreen extends WindowScreen {
                         account.login();
 //                        Accounts.get().add(account);
                     }
-                    close();
+                    onClose();
                 };
             }
             table.row();

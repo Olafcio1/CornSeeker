@@ -9,7 +9,7 @@ import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +35,10 @@ public class HistoricPlayersUpdater {
         }
         if (huds.isEmpty()) return;
 
-        ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+        ClientPacketListener networkHandler = mc.getConnection();
         if (networkHandler == null) return;
 
-        String address = networkHandler.getConnection().getAddress().toString();
+        String address = networkHandler.getConnection().getRemoteAddress().toString();
         // Split it at "/" and take the second part
         String[] addressParts = address.split("/");
         if (addressParts.length < 2) return;

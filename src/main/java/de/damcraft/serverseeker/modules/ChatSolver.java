@@ -6,9 +6,9 @@ import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
-import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import org.jetbrains.annotations.NotNull;
 
 public class ChatSolver extends Module {
@@ -34,7 +34,7 @@ public class ChatSolver extends Module {
 //            }
 //        }
 
-        ServerSeeker.mc.player.sendMessage(Text.of("[ChatSolver] Analyzing..."));
+        ServerSeeker.mc.player.sendSystemMessage(Component.literal("[ChatSolver] Analyzing..."));
 
         var lines = low.split("\n");
         var found = false;
@@ -47,20 +47,20 @@ public class ChatSolver extends Module {
                 try {
                     var res = MathUtil.eval(t);
                     // Yes math!!
-                    ServerSeeker.mc.player.networkHandler.sendChatMessage(String.valueOf(res));
+                    ServerSeeker.mc.player.connection.sendChat(String.valueOf(res));
                     found = true;
                     break;
                 } catch (Throwable ignored) {
                     // not math :(
                 }
             } else if (l.contains("repeat") || l.contains("say")) {
-                ServerSeeker.mc.player.networkHandler.sendChatMessage(t);
+                ServerSeeker.mc.player.connection.sendChat(t);
                 found = true;
                 break;
             }
         }
 
-        ServerSeeker.mc.player.sendMessage(Text.of(found ? "[ChatSolver] Game solved." : "[ChatSolver] Game failed."));
+        ServerSeeker.mc.player.sendSystemMessage(Component.literal(found ? "[ChatSolver] Game solved." : "[ChatSolver] Game failed."));
     }
 
     private static @NotNull String getTargetString(String[] chars) {
@@ -86,7 +86,7 @@ public class ChatSolver extends Module {
 
     @EventHandler
     public void onReceiveMessage(ReceiveMessageEvent e) {
-        if (e.getIndicator() == null || e.getIndicator().loggedName() == null)
+        if (e.getIndicator() == null || e.getIndicator().logTag() == null)
             solve(e.getMessage().getString());
     }
 
@@ -94,9 +94,9 @@ public class ChatSolver extends Module {
 
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive e) {
-        if (e.packet instanceof TitleS2CPacket c) {
+        if (e.packet instanceof ClientboundSetTitleTextPacket c) {
             title = c.text().getString();
-        } else if (e.packet instanceof SubtitleS2CPacket c) {
+        } else if (e.packet instanceof ClientboundSetSubtitleTextPacket c) {
             if (title != null) {
                 solve(title + " " + c.text().getString());
                 title = null;

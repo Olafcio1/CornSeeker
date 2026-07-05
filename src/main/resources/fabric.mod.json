@@ -16,6 +16,7 @@
     "sources": "https://github.com/Olafcio1/CornSeeker/"
   },
   "icon": "assets/serverseeker/icon.png",
+  "accessWidener": "serverseeker.accesswidener",
   "environment": "client",
   "entrypoints": {
     "meteor": [

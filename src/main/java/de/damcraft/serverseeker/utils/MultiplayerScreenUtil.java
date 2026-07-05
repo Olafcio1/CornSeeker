@@ -1,43 +1,43 @@
 package de.damcraft.serverseeker.utils;
 
 import de.damcraft.serverseeker.mixin.MultiplayerScreenAccessor;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.multiplayer.ServerData;
 
 public class MultiplayerScreenUtil {
 
-    public static void addInfoToServerList(MultiplayerScreen mps, ServerInfo info) {
+    public static void addInfoToServerList(JoinMultiplayerScreen mps, ServerData info) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        mps.getServerList().add(info, false);
-        mps.getServerList().saveFile();
-        mpsAccessor.getServerListWidget().setServers(mps.getServerList());
+        mps.getServers().add(info, false);
+        mps.getServers().save();
+        mpsAccessor.getServerListWidget().updateOnlineServers(mps.getServers());
     }
-    public static void addInfoToServerList(MultiplayerScreen mps, ServerInfo info, boolean reload) {
+    public static void addInfoToServerList(JoinMultiplayerScreen mps, ServerData info, boolean reload) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        mps.getServerList().add(info, false);
-        if (reload) mpsAccessor.getServerListWidget().setServers(mps.getServerList());
-    }
-
-    public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip) {
-        MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        ServerInfo info = new ServerInfo(name, ip, ServerInfo.ServerType.OTHER);
-        mps.getServerList().add(info, false);
-        mpsAccessor.getServerListWidget().setServers(mps.getServerList());
-        mps.getServerList().saveFile();
-    }
-    public static void addNameIpToServerList(MultiplayerScreen mps, String name, String ip, boolean reload) {
-        MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        ServerInfo info = new ServerInfo(name, ip, ServerInfo.ServerType.OTHER);
-        mps.getServerList().add(info, false);
-        if (reload) mpsAccessor.getServerListWidget().setServers(mps.getServerList());
+        mps.getServers().add(info, false);
+        if (reload) mpsAccessor.getServerListWidget().updateOnlineServers(mps.getServers());
     }
 
-    public static void reloadServerList(MultiplayerScreen mps) {
+    public static void addNameIpToServerList(JoinMultiplayerScreen mps, String name, String ip) {
         MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
-        mpsAccessor.getServerListWidget().setServers(mps.getServerList());
+        ServerData info = new ServerData(name, ip, ServerData.Type.OTHER);
+        mps.getServers().add(info, false);
+        mpsAccessor.getServerListWidget().updateOnlineServers(mps.getServers());
+        mps.getServers().save();
+    }
+    public static void addNameIpToServerList(JoinMultiplayerScreen mps, String name, String ip, boolean reload) {
+        MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
+        ServerData info = new ServerData(name, ip, ServerData.Type.OTHER);
+        mps.getServers().add(info, false);
+        if (reload) mpsAccessor.getServerListWidget().updateOnlineServers(mps.getServers());
     }
 
-    public static void saveList(MultiplayerScreen mps) {
-        mps.getServerList().saveFile();
+    public static void reloadServerList(JoinMultiplayerScreen mps) {
+        MultiplayerScreenAccessor mpsAccessor = (MultiplayerScreenAccessor) mps;
+        mpsAccessor.getServerListWidget().updateOnlineServers(mps.getServers());
+    }
+
+    public static void saveList(JoinMultiplayerScreen mps) {
+        mps.getServers().save();
     }
 }

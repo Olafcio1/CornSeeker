@@ -8,12 +8,12 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.utils.render.color.Color;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 
 public class ServerSeekerScreen extends WindowScreen {
-    private final MultiplayerScreen multiplayerScreen;
+    private final JoinMultiplayerScreen multiplayerScreen;
 
-    public ServerSeekerScreen(MultiplayerScreen multiplayerScreen) {
+    public ServerSeekerScreen(JoinMultiplayerScreen multiplayerScreen) {
         super(GuiThemes.get(), "CornSeeker");
         this.multiplayerScreen = multiplayerScreen;
     }
@@ -25,15 +25,15 @@ public class ServerSeekerScreen extends WindowScreen {
         WTable userInfoList = add(theme.table()).widget();
 
         userInfoList.add(theme.label("ur sexiness: "));
-        userInfoList.add(theme.label(100 / ServerSeeker.mc.getCurrentFps() + "%"));
+        userInfoList.add(theme.label(100 / ServerSeeker.mc.getFps() + "%"));
         userInfoList.row();
 
         userInfoList.add(theme.label("ur nick: "));
-        userInfoList.add(theme.label(ServerSeeker.mc.getSession().getUsername())).widget().color(Color.WHITE);
+        userInfoList.add(theme.label(ServerSeeker.mc.getUser().getName())).widget().color(Color.WHITE);
         userInfoList.row();
 
         userInfoList.add(theme.label("ur rizz: "));
-        userInfoList.add(theme.label(String.valueOf(multiplayerScreen.getServerList().size()))).widget().color(Color.WHITE);
+        userInfoList.add(theme.label(String.valueOf(multiplayerScreen.getServers().size()))).widget().color(Color.WHITE);
         userInfoList.row();
 
         WHorizontalList widgetList = add(theme.horizontalList()).expandX().widget();
@@ -41,15 +41,15 @@ public class ServerSeekerScreen extends WindowScreen {
         WButton findPlayersButton = widgetList.add(this.theme.button("Search players")).expandX().widget();
         WButton cleanUpServersButton = widgetList.add(this.theme.button("Clean up")).expandX().widget();
         newServersButton.action = () -> {
-            if (this.client == null) return;
-            this.client.setScreen(new FindNewServersScreen(this.multiplayerScreen));
+            if (this.minecraft == null) return;
+            this.minecraft.setScreen(new FindNewServersScreen(this.multiplayerScreen));
         };
         findPlayersButton.action = () -> {
-            if (this.client == null) return;
-            this.client.setScreen(new FindPlayerScreen(this.multiplayerScreen));
+            if (this.minecraft == null) return;
+            this.minecraft.setScreen(new FindPlayerScreen(this.multiplayerScreen));
         };
         cleanUpServersButton.action = () -> {
-            if (this.client == null) return;
+            if (this.minecraft == null) return;
             clear();
             add(theme.label("Are you sure you want to clean up your server list?"));
             add(theme.label("This will remove all servers that start with \"CornSeeker\""));
@@ -65,11 +65,11 @@ public class ServerSeekerScreen extends WindowScreen {
     public void tick() {}
 
     public void cleanUpServers() {
-        if (this.client == null) return;
+        if (this.minecraft == null) return;
 
-        for (int i = 0; i < this.multiplayerScreen.getServerList().size(); i++) {
-            if (this.multiplayerScreen.getServerList().get(i).name.startsWith("CornSeeker")) {
-                this.multiplayerScreen.getServerList().remove(this.multiplayerScreen.getServerList().get(i));
+        for (int i = 0; i < this.multiplayerScreen.getServers().size(); i++) {
+            if (this.multiplayerScreen.getServers().get(i).name.startsWith("CornSeeker")) {
+                this.multiplayerScreen.getServers().remove(this.multiplayerScreen.getServers().get(i));
                 i--;
             }
         }
@@ -77,6 +77,6 @@ public class ServerSeekerScreen extends WindowScreen {
         MultiplayerScreenUtil.saveList(multiplayerScreen);
         MultiplayerScreenUtil.reloadServerList(multiplayerScreen);
 
-        client.setScreen(this.multiplayerScreen);
+        minecraft.setScreen(this.multiplayerScreen);
     }
 }

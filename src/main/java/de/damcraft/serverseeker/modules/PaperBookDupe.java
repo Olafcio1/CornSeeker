@@ -4,10 +4,10 @@ import de.damcraft.serverseeker.ServerSeeker;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.gui.screen.ingame.BookScreen;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import net.minecraft.client.gui.screens.inventory.BookViewScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Items;
 
 public class PaperBookDupe extends Module {
     public PaperBookDupe() {
@@ -17,22 +17,22 @@ public class PaperBookDupe extends Module {
     @EventHandler
     public void onTick(TickEvent.Post e) throws NoSuchFieldException, IllegalAccessException {
         this.toggle();
-        var hand = ServerSeeker.mc.player.getMainHandStack();
+        var hand = ServerSeeker.mc.player.getMainHandItem();
         if (hand.getItem() != Items.WRITABLE_BOOK) {
-            ServerSeeker.mc.player.sendMessage(Text.of("[CornSeeker] To do PaperBookDupe, you must hold a book and quil in your main hand!"));
+            ServerSeeker.mc.player.sendSystemMessage(Component.literal("[CornSeeker] To do PaperBookDupe, you must hold a book and quil in your main hand!"));
             return;
         }
 //        hand.use(ServerSeeker.mc.world, ServerSeeker.mc.player, Hand.MAIN_HAND);
-        ServerSeeker.mc.player.useBook(hand, Hand.MAIN_HAND);
-        var screen = ServerSeeker.mc.currentScreen;
-        if (screen instanceof BookScreen book) {
-            var ch = book.getClass().getDeclaredField("contents");
-            var contents = (BookScreen.Contents) ch.get(BookScreen.Contents.class);
-            contents.pages().add(Text.of(".gg/4dmqcVfQjA OLAFCIO.PL ON FUCKING TOP YA"));
+        ServerSeeker.mc.player.openItemGui(hand, InteractionHand.MAIN_HAND);
+        var screen = ServerSeeker.mc.screen;
+        if (screen instanceof BookViewScreen book) {
+            var ch = book.getClass().getDeclaredField("bookAccess");
+            var contents = (BookViewScreen.BookAccess) ch.get(BookViewScreen.BookAccess.class);
+            contents.pages().add(Component.literal(".gg/4dmqcVfQjA OLAFCIO.PL ON FUCKING TOP YA"));
             ServerSeeker.mc.player.getInventory().dropAll();
-            ServerSeeker.mc.disconnect();
+            ServerSeeker.mc.disconnectWithProgressScreen();
         } else {
-            ServerSeeker.mc.player.sendMessage(Text.of("[CornSeeker] Something fucked up in PaperBookDupe!"));
+            ServerSeeker.mc.player.sendSystemMessage(Component.literal("[CornSeeker] Something fucked up in PaperBookDupe!"));
         }
     }
 }

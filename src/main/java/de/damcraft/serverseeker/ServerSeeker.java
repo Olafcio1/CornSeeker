@@ -18,8 +18,8 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Items;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -38,15 +38,15 @@ public class ServerSeeker extends MeteorAddon {
 
     public enum C {
         ;
-        public static final Category MAIN = new Category("CornSeeker", Items.SPYGLASS.getDefaultStack());
-        public static final Category CRASH = new Category("Crash", Items.BARRIER.getDefaultStack());
+        public static final Category MAIN = new Category("CornSeeker", Items.SPYGLASS::getDefaultInstance);
+        public static final Category CRASH = new Category("Crash", Items.BARRIER::getDefaultInstance);
     }
 
     public static final Map<String, Country> COUNTRY_MAP = new Object2ReferenceOpenHashMap<>();
 
     public static final Gson gson = new Gson();
 
-    public static MinecraftClient mc;
+    public static Minecraft mc;
 
     @Override
     public void onInitialize() {

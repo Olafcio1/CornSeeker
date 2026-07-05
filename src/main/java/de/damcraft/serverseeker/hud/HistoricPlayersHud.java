@@ -6,7 +6,7 @@ import meteordevelopment.meteorclient.gui.GuiThemes;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.hud.*;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
-import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.multiplayer.PlayerInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,13 +102,13 @@ public class HistoricPlayersHud extends HudElement {
         line++;
         List<String> alreadyDisplayed = new ArrayList<>();
         if (showCurrentPlayers.get() && mc.player != null) {
-            for (PlayerListEntry player : mc.player.networkHandler.getListedPlayerListEntries()) {
+            for (PlayerInfo player : mc.player.connection.getListedOnlinePlayers()) {
                 if (line >= limit.get()) {
                     more++;
                     continue;
                 }
-                alreadyDisplayed.add(String.valueOf(player.getProfile().getId()));
-                String name = player.getProfile().getName();
+                alreadyDisplayed.add(String.valueOf(player.getProfile().id()));
+                String name = player.getProfile().name();
                 double offset = alignX(renderer.textWidth(name), alignment.get());
                 renderer.text(name, x + offset, y + line * renderer.textHeight(), currentPlayersColor.get(), true);
                 line++;

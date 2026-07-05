@@ -1,20 +1,20 @@
 package de.damcraft.serverseeker.mixin;
 
-import net.minecraft.network.packet.c2s.handshake.ConnectionIntent;
-import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
+import net.minecraft.network.protocol.handshake.ClientIntent;
+import net.minecraft.network.protocol.handshake.ClientIntentionPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(HandshakeC2SPacket.class)
+@Mixin(ClientIntentionPacket.class)
 public interface HandshakeC2SAccessor {
     @Mutable
-    @Accessor
+    @Accessor("hostName")
     void setAddress(String address);
 
-    @Accessor("intendedState")
-    ConnectionIntent getNetworkState();
+    @Accessor("intention")
+    ClientIntent getNetworkState();
 
-    @Accessor("address")
+    @Accessor("hostName")
     String getAddress();
 }

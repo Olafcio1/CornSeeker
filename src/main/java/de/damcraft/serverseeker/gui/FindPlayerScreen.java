@@ -13,12 +13,12 @@ import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.utils.network.MeteorExecutor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -31,7 +31,7 @@ import java.util.Objects;
 import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class FindPlayerScreen extends WindowScreen {
-    private final MultiplayerScreen multiplayerScreen;
+    private final JoinMultiplayerScreen multiplayerScreen;
 
     public enum NameOrUUID {
         Name,
@@ -66,7 +66,7 @@ public class FindPlayerScreen extends WindowScreen {
 
     WContainer settingsContainer;
 
-    public FindPlayerScreen(MultiplayerScreen multiplayerScreen) {
+    public FindPlayerScreen(JoinMultiplayerScreen multiplayerScreen) {
         super(GuiThemes.get(), "Find Players");
         this.multiplayerScreen = multiplayerScreen;
     }
@@ -145,7 +145,7 @@ public class FindPlayerScreen extends WindowScreen {
 
                     WButton addServerButton = theme.button("Add Server");
                     addServerButton.action = () -> {
-                        ServerInfo info = new ServerInfo("CornSeeker " + serverIP + " (" + playerName + ")", serverIP, ServerInfo.ServerType.OTHER);
+                        ServerData info = new ServerData("CornSeeker " + serverIP + " (" + playerName + ")", serverIP, ServerData.Type.OTHER);
                         MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info);
                         addServerButton.visible = false;
                     };
@@ -153,11 +153,11 @@ public class FindPlayerScreen extends WindowScreen {
                     HostAndPort hap = HostAndPort.fromString(serverIP);
                     WButton joinServerButton = theme.button("Join Server");
                     joinServerButton.action = () -> {
-                        ConnectScreen.connect(new TitleScreen(), MinecraftClient.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerInfo("a", hap.toString(), ServerInfo.ServerType.OTHER), false, null);
+                        ConnectScreen.connect(new TitleScreen(), Minecraft.getInstance(), new ServerAddress(hap.getHost(), hap.getPort()), new ServerData("a", hap.toString(), ServerData.Type.OTHER), false, null);
                     };
 
                     WButton serverInfoButton = theme.button("Server Info");
-                    serverInfoButton.action = () -> this.client.setScreen(new ServerInfoScreen(serverIP));
+                    serverInfoButton.action = () -> this.minecraft.setScreen(new ServerInfoScreen(serverIP));
 
                     table.add(addServerButton);
                     table.add(joinServerButton);
@@ -171,12 +171,12 @@ public class FindPlayerScreen extends WindowScreen {
     private void addAllServers(List<Server> records, String playerName) {
         for (var server : records) {
             String serverIP = server.ip;
-            ServerInfo info = new ServerInfo("CornSeeker " + serverIP + " (" + playerName + ")", serverIP, ServerInfo.ServerType.OTHER);
+            ServerData info = new ServerData("CornSeeker " + serverIP + " (" + playerName + ")", serverIP, ServerData.Type.OTHER);
             MultiplayerScreenUtil.addInfoToServerList(multiplayerScreen, info, false);
         }
         MultiplayerScreenUtil.saveList(multiplayerScreen);
-        if (client == null) return;
-        client.setScreen(this.multiplayerScreen);
+        if (minecraft == null) return;
+        minecraft.setScreen(this.multiplayerScreen);
     }
 
     @Override

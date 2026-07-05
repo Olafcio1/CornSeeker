@@ -2,11 +2,11 @@ package de.damcraft.serverseeker.mixin;
 
 import de.damcraft.serverseeker.gui.GetInfoScreen;
 import de.damcraft.serverseeker.gui.ServerSeekerScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerServerListWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,55 +14,55 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 
-@Mixin(MultiplayerScreen.class)
+@Mixin(JoinMultiplayerScreen.class)
 public abstract class MultiplayerScreenMixin extends Screen {
     @Shadow
-    protected MultiplayerServerListWidget serverListWidget;
-    private ButtonWidget getInfoButton;
+    protected ServerSelectionList serverSelectionList;
+    private Button getInfoButton;
 
     protected MultiplayerScreenMixin() {
         super(null);
     }
 
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/multiplayer/MultiplayerScreen;updateButtonActivationStates()V"))
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/multiplayer/JoinMultiplayerScreen;onSelectedChange()V"))
     private void onInit(CallbackInfo info) {
         // Add a button which sets the current screen to the ServerSeekerScreen
-        this.addDrawableChild(
-            new ButtonWidget.Builder(
-                Text.literal("ServerSeeker"),
+        this.addRenderableWidget(
+            new Button.Builder(
+                Component.literal("ServerSeeker"),
                 onPress -> {
-                    if (this.client == null) return;
-                    this.client.setScreen(new ServerSeekerScreen((MultiplayerScreen) (Object) this));
+                    if (this.minecraft == null) return;
+                    this.minecraft.setScreen(new ServerSeekerScreen((JoinMultiplayerScreen) (Object) this));
                 }
             )
-                .position(150, 3)
+                .pos(150, 3)
                 .width(80)
                 .build()
         );
 
         // Add a button to get the info of the selected server
-        this.getInfoButton = this.addDrawableChild(
-            new ButtonWidget.Builder(
-                Text.literal("Get players"),
+        this.getInfoButton = this.addRenderableWidget(
+            new Button.Builder(
+                Component.literal("Get players"),
                 onPress -> {
-                    if (this.client == null) return;
-                    MultiplayerServerListWidget.Entry entry = this.serverListWidget.getSelectedOrNull();
+                    if (this.minecraft == null) return;
+                    ServerSelectionList.Entry entry = this.serverSelectionList.getSelected();
                     if (entry != null) {
-                        if (this.client == null) return;
-                        this.client.setScreen(new GetInfoScreen((MultiplayerScreen) (Object) this, entry));
+                        if (this.minecraft == null) return;
+                        this.minecraft.setScreen(new GetInfoScreen((JoinMultiplayerScreen) (Object) this, entry));
                     }
                 }
             )
-                .position(150 + 80 + 5, 3)
+                .pos(150 + 80 + 5, 3)
                 .width(80)
                 .build()
         );
     }
 
-    @Inject(method = "updateButtonActivationStates", at = @At("TAIL"))
+    @Inject(method = "onSelectedChange", at = @At("TAIL"))
     private void onUpdateButtonActivationStates(CallbackInfo info) {
         // Enable the button if a server is selected
-        MultiplayerServerListWidget.Entry entry = this.serverListWidget.getSelectedOrNull();
-        this.getInfoButton.active = entry != null && !(entry instanceof MultiplayerServerListWidget.ScanningEntry);
+        ServerSelectionList.Entry entry = this.serverSelectionList.getSelected();
+        this.getInfoButton.active = entry != null && !(entry instanceof ServerSelectionList.LANHeader);
     }
 }

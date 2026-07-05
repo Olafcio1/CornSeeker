@@ -6,8 +6,8 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.nbt.*;
 
 public class NbtUtils {
-    public static NbtCompound jsonToCompound(JsonObject json) {
-        var compound = new NbtCompound();
+    public static CompoundTag jsonToCompound(JsonObject json) {
+        var compound = new CompoundTag();
         for (var entry : json.entrySet()) {
             var v = entry.getValue();
             var v2 = switch (v) {
@@ -21,14 +21,19 @@ public class NbtUtils {
         return compound;
     }
 
-    public static NbtList jsonToList(JsonArray json) {
-        var list = new NbtList();
+    public static ListTag jsonToList(JsonArray json) {
+        var list = new ListTag();
         for (var e : json)
             if (e instanceof JsonArray c)
                 list.add(jsonToList(c));
             else if (e instanceof JsonObject c)
                 list.add(jsonToCompound(c));
-            else list.add((NbtElement) e);
+            else list.add(
+                e instanceof JsonPrimitive p ? objectToElement(primitiveToObject(p)) :
+                e instanceof JsonArray a     ? jsonToList(a) :
+                e instanceof JsonObject o    ? jsonToCompound(o) :
+                                               null
+            );
         return list;
     }
 
@@ -49,11 +54,11 @@ public class NbtUtils {
             return null;
     }
 
-    public static NbtElement objectToElement(Object obj) {
+    public static Tag objectToElement(Object obj) {
         return switch (obj) {
-            case String c -> NbtString.of(c);
-            case Boolean c -> NbtByte.of(c);
-            case Number c -> NbtDouble.of(c.doubleValue());
+            case String c -> StringTag.valueOf(c);
+            case Boolean c -> ByteTag.valueOf(c);
+            case Number c -> DoubleTag.valueOf(c.doubleValue());
             case JsonObject c -> jsonToCompound(c);
             case JsonArray c -> objectToElement(c.getAsJsonArray());
             case JsonPrimitive c -> objectToElement(primitiveToObject(c.getAsJsonPrimitive()));

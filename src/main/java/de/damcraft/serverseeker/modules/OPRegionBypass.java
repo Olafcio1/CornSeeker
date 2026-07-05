@@ -18,6 +18,6 @@ public class OPRegionBypass extends Module {
             y = info.getY(),
             z = info.getZ();
 //            ServerSeeker.mc.player.sendMessage(Text.of("seq:" + ev.getSequence()));
-        ServerSeeker.mc.player.networkHandler.sendCommand("setblock " + x + " " + y + " " + z + " air");
+        ServerSeeker.mc.player.connection.sendCommand("setblock " + x + " " + y + " " + z + " air");
     }
 }

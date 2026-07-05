@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import de.damcraft.serverseeker.SmallHttp;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
 
 import java.io.InputStream;
@@ -21,31 +21,31 @@ import java.util.concurrent.CompletableFuture;
 
 public class InstallMeteorScreen extends Screen {
     public InstallMeteorScreen() {
-        super(Text.of("Meteor Client is not installed!"));
+        super(Component.literal("Meteor Client is not installed!"));
     }
 
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, this.height / 4 - 60 + 20, -1);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
+        context.centeredText(this.font, this.title, this.width / 2, this.height / 4 - 60 + 20, -1);
     }
 
     protected void init() {
         super.init();
-        ButtonWidget quitButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("menu.quit"), (button) -> {
-            this.client.scheduleStop();
-        }).dimensions(this.width / 2 + 2, this.height / 4 + 100 + 25, 148, 20).build());
+        Button quitButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.quit"), (button) -> {
+            this.minecraft.stop();
+        }).bounds(this.width / 2 + 2, this.height / 4 + 100 + 25, 148, 20).build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.of("Automatically install Meteor (§arecommended§r)"), (button) -> {
+        this.addRenderableWidget(Button.builder(Component.literal("Automatically install Meteor (§arecommended§r)"), (button) -> {
             quitButton.active = false;
             CompletableFuture.runAsync(() -> {
                 install();
                 quitButton.active = true;
             });
-        }).dimensions(this.width / 2 - 150, this.height / 4 + 100, 300, 20).build());
+        }).bounds(this.width / 2 - 150, this.height / 4 + 100, 300, 20).build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.of("Manual installation"), (button) -> {
-            Util.getOperatingSystem().open("https://meteorclient.com/faq/installation");
-        }).dimensions(this.width / 2 - 150, this.height / 4 + 100 + 25, 148, 20).build());
+        this.addRenderableWidget(Button.builder(Component.literal("Manual installation"), (button) -> {
+            Util.getPlatform().openUri("https://meteorclient.com/faq/installation");
+        }).bounds(this.width / 2 - 150, this.height / 4 + 100 + 25, 148, 20).build());
     }
 
     private void install() {
@@ -57,7 +57,7 @@ public class InstallMeteorScreen extends Screen {
 
         Gson gson = new Gson();
         JsonObject json = gson.fromJson(result, JsonObject.class);
-        String currentVersion = SharedConstants.getGameVersion().getName();
+        String currentVersion = SharedConstants.getCurrentVersion().name();
         String stableVersion = json.get("mc_version").getAsString();
         String devBuildVersion = json.get("dev_build_mc_version").getAsString();
         String url;
@@ -112,20 +112,20 @@ public class InstallMeteorScreen extends Screen {
     private void displayError(String errorMessage) {
         this.displayNotice(errorMessage);
 
-        this.addDrawableChild(ButtonWidget.builder(Text.of("Open install FAQ"), (button2) -> {
-            Util.getOperatingSystem().open("https://meteorclient.com/faq/installation");
-        }).dimensions(this.width / 2 - 150, this.height / 4 + 100, 300, 20).build());
+        this.addRenderableWidget(Button.builder(Component.literal("Open install FAQ"), (button2) -> {
+            Util.getPlatform().openUri("https://meteorclient.com/faq/installation");
+        }).bounds(this.width / 2 - 150, this.height / 4 + 100, 300, 20).build());
     }
 
     private void displayNotice(String noticeMessage) {
-        this.clearChildren();
-        this.addDrawableChild(new TextWidget(
+        this.clearWidgets();
+        this.addRenderableWidget(new StringWidget(
             this.width / 2 - 250,
             this.height / 4,
             500,
             20,
-            Text.of(noticeMessage),
-            this.textRenderer
+            Component.literal(noticeMessage),
+            this.font
         ));
     }
 }
